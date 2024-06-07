@@ -607,7 +607,7 @@ const ServiceProvider = () => {
                                     id={service._id}
                                     onChange={(e) => {
                                       if (e.target.checked) {
-                                        // If the checkbox is checked, add the service to UpdatedServices
+                                        // if the checkbox is checked, add the service to UpdatedServices
                                         setUpdatedServices([
                                           ...UpdatedServices,
                                           service,
