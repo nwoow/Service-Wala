@@ -30,9 +30,10 @@ import {
 } from "firebase/storage";
 import { storage } from "@/firebase";
 import { IoSettings } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdMedicalServices } from "react-icons/md";
 import Footer from "@/components/Footer";
 import ServiceProviderLocation from "@/components/ServiceProviderLocation";
+import { HiPencilSquare } from "react-icons/hi2";
 
 const reviews = [
   {
@@ -416,12 +417,14 @@ const ServiceProvider = () => {
                         <span>₹6200</span>
                       </div>
                     </div>
-                    <button
+                    <Button
                       onClick={handleOpen}
-                      className="px-4 py-2 mt-3 whitespace-nowrap bg-gray-800 text-white font-bold rounded shadow"
+                      variant="gradient"
+                      color="blue"
+                      className="mt-3 md:mt-0 flex justify-center items-center whitespace-nowrap gap-1 rounded text-sm"
                     >
-                      Edit Profile
-                    </button>
+                      Edit Profile <HiPencilSquare size={18} />
+                    </Button>
                     <Dialog
                       open={open}
                       handler={handleOpen}
@@ -543,7 +546,7 @@ const ServiceProvider = () => {
                       </DialogFooter>
                     </Dialog>
                   </div>
-                  <div className="flex flex-col shadow-lg gap-6 w-full h-full bg-white rounded-md px-6 py-4 border border-gray-400">
+                  <div className="flex flex-col shadow-lg gap-6 w-full h-full bg-white rounded-md px-6 py-4">
                     <div className="flex justify-between w-full">
                       <div>Phone Number</div>
                       <div>{user?.phoneNumber}</div>
@@ -572,15 +575,17 @@ const ServiceProvider = () => {
                 </div>
 
                 <div className="flex items-center md:flex-row flex-col justify-between w-full">
-                  <h1 className="flex items-center gap-1 text-2xl md:flex-row    font-bold text-gray-700">
+                  <h1 className="flex items-center gap-1 text-2xl md:flex-row font-bold text-gray-700">
                     <IoSettings size={30} /> Services You Provide
                   </h1>
-                  <button
+                  <Button
                     onClick={handleOpen2}
-                    className="px-4 py-2 whitespace-nowrap bg-gray-800 text-white font-bold rounded shadow"
+                    variant="gradient"
+                    color="blue"
+                    className="mt-3 md:mt-0 flex justify-center items-center whitespace-nowrap gap-1 rounded text-sm"
                   >
-                    Add New Service
-                  </button>
+                    Add New Service <MdMedicalServices size={18} />
+                  </Button>
                   <Dialog
                     open={open2}
                     handler={handleOpen2}
@@ -667,7 +672,7 @@ const ServiceProvider = () => {
                     </DialogFooter>
                   </Dialog>
                 </div>
-                <div className="p-4 bg-white rounded-lg shadow-lg">
+                <div className="p-4 bg-white rounded-lg shadow-lg grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {UpdatedServices?.map((service, index) => {
                     return (
                       <ListItem
@@ -696,7 +701,7 @@ const ServiceProvider = () => {
                     );
                   })}
                 </div>
-                <ServiceProviderLocation />
+                <ServiceProviderLocation serviceProvider={user} />
                 <div className="container mx-auto px-4 py-8 ">
                   <div className="flex items-center md:flex-row flex-col justify-between mb-4">
                     <h2 className="text-2xl font-bold mb-4">

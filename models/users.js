@@ -29,7 +29,7 @@ const userSchema = new Schema(
       enum: ["male", "female", "Unspecified"], // Example enum values, adjust as needed
     },
     locations: {
-      type: [String],
+      type: [],
       default: [],
     },
     city: {

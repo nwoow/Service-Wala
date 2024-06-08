@@ -1,52 +1,88 @@
 "use client";
-import { Input } from "@material-tailwind/react";
+import { Button, Input } from "@material-tailwind/react";
 import { StandaloneSearchBox, LoadScript } from "@react-google-maps/api";
 import axios from "axios";
-import React, { useRef, useState } from "react";
-import { MdDelete } from "react-icons/md";
+import React, { useEffect, useState } from "react";
+import { MdAddLocationAlt, MdDelete } from "react-icons/md";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 const libraries = ["places"];
 
-const ServiceProviderLocation = () => {
+const ServiceProviderLocation = ({ serviceProvider }) => {
   const [locations, setLocations] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
 
+  // Load the search box reference
   const onLoad = (ref) => {
     setSearchBox(ref);
   };
 
+  // Handle places changed event
   const onPlacesChanged = () => {
     const places = searchBox.getPlaces();
     if (places && places.length > 0) {
       const place = places[0];
       const address = place.formatted_address;
-      setSelectedPlace(address);
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      setSelectedPlace({ location: address, lat, lng });
     }
   };
 
-  const handleAddLocation = () => {
+  // Load service provider locations on component mount
+  useEffect(() => {
+    if (serviceProvider) {
+      setLocations(serviceProvider.locations);
+      console.log(serviceProvider);
+    }
+  }, [serviceProvider]);
+
+  // Add a new location
+  const handleAddLocation = async () => {
     if (selectedPlace) {
-      setLocations((prev) => [...prev, selectedPlace]);
+      const updatedLocations = [...locations, selectedPlace];
+      setLocations(updatedLocations);
+
+      const postData = {
+        ...serviceProvider,
+        locations: updatedLocations,
+      };
+
+      await axios.post(
+        `/api/service-providers/${serviceProvider._id}/`,
+        postData
+      );
       setSelectedPlace(null);
     }
   };
 
+  // Delete a location
   const handleDelete = (index) => {
     confirmAlert({
       title: "Confirm to delete",
       message: "Are you sure you want to delete this location?",
       buttons: [
         {
-          label: "Yes",
-          onClick: () => {
-            setLocations((prev) => prev.filter((_, i) => i !== index));
-          },
+          label: "No",
         },
         {
-          label: "No",
+          label: "Yes",
+          onClick: async () => {
+            const updatedLocations = locations.filter((_, i) => i !== index);
+            setLocations(updatedLocations);
+
+            const postData = {
+              ...serviceProvider,
+              locations: updatedLocations,
+            };
+
+            await axios.post(
+              `/api/service-providers/${serviceProvider._id}/`,
+              postData
+            );
+          },
         },
       ],
     });
@@ -58,12 +94,12 @@ const ServiceProviderLocation = () => {
       libraries={libraries}
     >
       <div className="bg-white p-4 py-6 rounded shadow-md">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0">
+        <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0 text-center md:text-left w-full">
             Your available locations
           </h2>
-          <div className="flex gap-2 full">
-            <div className="w-72">
+          <div className="flex gap-2 flex-col md:flex-row w-full md:w-fit">
+            <div className="w-full md:w-72">
               <StandaloneSearchBox
                 onLoad={onLoad}
                 onPlacesChanged={onPlacesChanged}
@@ -75,12 +111,15 @@ const ServiceProviderLocation = () => {
                 />
               </StandaloneSearchBox>
             </div>
-            <button
+            <Button
+              color="blue"
+              variant="gradient"
               onClick={handleAddLocation}
-              className="px-4 py-2 whitespace-nowrap bg-gray-800 text-white font-bold rounded shadow"
+              className="flex gap-1 items-center justify-center rounded text-sm whitespace-nowrap"
             >
               Add location
-            </button>
+              <MdAddLocationAlt size={18} />
+            </Button>
           </div>
         </div>
         {locations.map((location, index) => (
@@ -88,7 +127,7 @@ const ServiceProviderLocation = () => {
             key={index}
             className="flex flex-col md:flex-row justify-between items-start md:items-center mt-4 md:mt-2 bg-gray-100 p-4 rounded-lg"
           >
-            <p className="mb-2 md:mb-0 w-full md:w-auto">{location}</p>
+            <p className="mb-2 md:mb-0 w-full md:w-auto">{location.location}</p>
             <button
               onClick={() => handleDelete(index)}
               className="bg-red-500 text-white flex justify-center gap-1.5 px-4 w-fit py-2 rounded-md items-center"
