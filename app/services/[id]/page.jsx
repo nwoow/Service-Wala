@@ -84,7 +84,7 @@ const ReviewCard = ({ name, review, rating, image }) => (
         <img
           src={image?.url}
           alt={name}
-          className="rounded-full object-cover"
+          className="rounded-full w-12 h-12 object-cover"
         />
       </div>
       <div className="flex-1">
@@ -656,7 +656,7 @@ const Service = () => {
                   </div>
                 </div>
               ) : (
-                <div className="w-full grid grid-cols-2 gap-4">
+                <div className="w-full grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
                   {service.reviews?.map((review, index) => (
                     <div key={index} className="w-full h-full">
                       <ReviewCard key={review.id} {...review} />

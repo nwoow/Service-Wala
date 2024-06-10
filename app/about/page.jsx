@@ -100,7 +100,7 @@ const About = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-center mb-4">
                 <img
-                  src="/icons/shipping.svg"
+                  src="/image/line2.svg"
                   alt="Fast & Free Shipping"
                   className="h-12 w-12"
                 />
@@ -116,7 +116,7 @@ const About = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-center mb-4">
                 <img
-                  src="/icons/warranty.svg"
+                  src="/image/line2.svg"
                   alt="Warranty Protection"
                   className="h-12 w-12"
                 />
@@ -132,7 +132,7 @@ const About = () => {
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-center mb-4">
                 <img
-                  src="/icons/materials.svg"
+                  src="/image/line2.svg"
                   alt="Premium Materials"
                   className="h-12 w-12"
                 />

@@ -94,6 +94,20 @@ export default function Home() {
           loading ? "hidden" : "bloack"
         } transition-all duration-700`}
       >
+        <div className="areahome">
+          <ul className="circleshome">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
         <Nav />
         <div className="flex flex-col lg:flex-row">
           {/* Left half */}
