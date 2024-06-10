@@ -185,7 +185,7 @@ const ServiceProvider = () => {
   }, []);
 
   const filteredServices = useMemo(() => {
-    return allServices.filter((e) => !user.services.includes(e._id));
+    return allServices.filter((e) => !user.services?.includes(e._id));
   }, [allServices, user.services]);
 
   const handleUpdateServices = useCallback(async () => {
