@@ -3,7 +3,7 @@ import { Button, Input } from "@material-tailwind/react";
 import { StandaloneSearchBox, LoadScript } from "@react-google-maps/api";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { MdAddLocationAlt, MdDelete } from "react-icons/md";
+import { MdAddLocationAlt, MdDelete, MdLocationOn } from "react-icons/md";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
@@ -35,7 +35,6 @@ const ServiceProviderLocation = ({ serviceProvider }) => {
   useEffect(() => {
     if (serviceProvider) {
       setLocations(serviceProvider.locations);
-      console.log(serviceProvider);
     }
   }, [serviceProvider]);
 
@@ -95,8 +94,8 @@ const ServiceProviderLocation = ({ serviceProvider }) => {
     >
       <div className="bg-white p-4 py-6 rounded shadow-md">
         <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0 text-center md:text-left w-full">
-            Your available locations
+          <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0 text-center md:text-left w-full flex items-center">
+            <MdLocationOn color="red" size={25} /> Your available locations
           </h2>
           <div className="flex gap-2 flex-col md:flex-row w-full md:w-fit">
             <div className="w-full md:w-72">
@@ -122,7 +121,7 @@ const ServiceProviderLocation = ({ serviceProvider }) => {
             </Button>
           </div>
         </div>
-        {locations.map((location, index) => (
+        {locations?.map((location, index) => (
           <div
             key={index}
             className="flex flex-col md:flex-row justify-between items-start md:items-center mt-4 md:mt-2 bg-gray-100 p-4 rounded-lg"
