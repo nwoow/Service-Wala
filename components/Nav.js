@@ -804,8 +804,8 @@ export default function Nav() {
             <CardBody>
               <Tabs value={type} className="">
                 <div className="flex justify-between items-center mb-4">
-                  <h1 className="text-md text-center flex gap-1 items-center text-gray-800">
-                    Login / Register <IoPersonCircleOutline size={24} />
+                  <h1 className="text-md text-center flex gap-1 items-center font-julius font-bold text-gray-700">
+                  <IoPersonCircleOutline size={24} /> Login | Register 
                   </h1>
                   <IconButton
                     variant="text"

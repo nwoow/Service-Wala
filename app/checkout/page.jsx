@@ -22,6 +22,7 @@ import { SiPhonepe } from "react-icons/si";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { getDistance } from "@/utils/distance";
 
 function Shipping() {
   const [formData, setFormData] = useState({
@@ -183,6 +184,52 @@ function Shipping() {
     const otp = Math.floor(1000 + Math.random() * 9000);
     return otp.toString();
   }
+  const getServiceProvidersForCartItems = async (cartItems, nearestServiceProviders) => {
+    const serviceProviderMap = new Map();
+  
+    // Function to process service provider services
+    const processServiceProvider = async (sp) => {
+      if (sp?.services?.length > 0 && !serviceProviderMap.has(sp._id)) {
+        try {
+          const response = await axios.post(
+            `/api/service-providers/services-from-array-of-id`,
+            sp?.services
+          );
+          serviceProviderMap.set(sp._id, response.data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+  
+    // Fetch services for all service providers in parallel
+    await Promise.all(nearestServiceProviders.map(processServiceProvider));
+  
+    const availableServiceProviders = [];
+  
+    // Function to check if a service provider has the cart item service
+    const checkServiceProviderForCartItem = (cartItem) => {
+      nearestServiceProviders.forEach((sp) => {
+        const services = serviceProviderMap.get(sp._id) || [];
+        services.forEach((service) => {
+          if (service.name === cartItem.name) {
+            availableServiceProviders.push(sp);
+          } else {
+            service?.subServices?.forEach((subService) => {
+              if (subService.name === cartItem.name) {
+                availableServiceProviders.push(sp);
+              }
+            });
+          }
+        });
+      });
+    };
+  
+    // Check each cart item against the service providers
+    cartItems.forEach(checkServiceProviderForCartItem);
+  
+    return availableServiceProviders;
+  };
   const handleSumbitOrderViaCash = async () => {
     handleCompletedDailog();
     const location = JSON.parse(localStorage.getItem("location"));
@@ -204,37 +251,36 @@ function Shipping() {
       };
       await axios.post("/api/users/update", updatedUser);
       gettingUser();
-      const res = await axios.post(`/api/services/update-bookings`, {
+      await axios.post(`/api/services/update-bookings`, {
         cartItems,
         orderId: response.data._id,
       });
-      localStorage.removeItem("cart");
+      const serviceProviders = (await axios.get(`/api/service-providers`)).data;
+      const { lat, lng } = location;
+      const nearestServiceProviders = [];
+      const uniqueServiceProviders = new Set();
+
+      // Find the service providers within for related to the cart items
+      // Problems:
+      // service and sub service id is different get sub service
+      // Other solution is check the cart item name is same as the service name or it's sub service name!
+
+      serviceProviders.forEach((sp) => {
+        sp.locations.forEach((s) => {
+          const dis = getDistance(lat, lng, s.lat, s.lng);
+          if (dis <= 15 && !uniqueServiceProviders.has(sp._id)) {
+            nearestServiceProviders.push(sp);
+            uniqueServiceProviders.add(sp._id);
+          }
+        });
+      });      
+      const availableServiceProviders = await getServiceProvidersForCartItems(cartItems, nearestServiceProviders);
+      console.log({ nearestServiceProviders });
+      console.log({ availableServiceProviders });
+      // localStorage.removeItem("cart");
     } catch (error) {
       console.error(`Error updating service ${serviceId}:`, error);
     }
-
-    // const promises = cartItems.map(async (item) => {
-    //   const serviceId = item.serviceId;
-    //   const updatedItem = {
-    //     ...item,
-    //     bookings: [
-    //       ...item.bookings,
-    //       { orderId: response.data._id, subService: item },
-    //     ],
-    //   };
-
-    //   // Remove _id field from updatedItem if it exists
-    //   const { _id, ...restUpdatedItem } = updatedItem;
-
-    //   try {
-    //     return await axios.post(`/api/services/${serviceId}/update`, restUpdatedItem);
-    //   } catch (error) {
-    //     console.error(`Error updating service ${serviceId}:`, error);
-    //   }
-    // });
-
-    // const results = await Promise.all(promises);
-    // results.forEach((res) => console.log(res));
   };
 
   return (
@@ -441,7 +487,7 @@ function Shipping() {
                 <Dialog
                   open={completedDailog}
                   handler={handleCompletedDailog}
-                  dismiss={{ enabled: false }}
+                  // dismiss={{ enabled: false }}
                   className="p-3 bg-gray-100"
                   size="xs"
                 >
