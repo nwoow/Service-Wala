@@ -8,6 +8,7 @@ import {
   IconButton,
   DialogHeader,
   DialogBody,
+  Tooltip,
 } from "@material-tailwind/react";
 import { RxCross1 } from "react-icons/rx";
 import {
@@ -142,31 +143,24 @@ const Booking = () => {
         </div>
         <Typography
           color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
+          className="mb-8 flex flex-col gap-3 items-start pr-4 font-normal"
         >
-          <FaPhone className="text-teal-500" size={23}/>
-          Phone: +91 9508973152
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <IoMdMailOpen className="text-deep-purple-500 " size={23} />
-          Email: atul.kumar@example.com
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <PiGenderIntersexFill className="text-blue-500" size={23}/>
-          Gender: Male
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <FaBookmark className="text-amber-500" size={23} />
-          Booked Over: 5 times
+          <div className="flex items-center gap-3">
+            <FaPhone className="text-teal-500" size={23} />
+            Phone: +91 9508973152
+          </div>
+          <div className="flex items-center gap-3">
+            <IoMdMailOpen className="text-deep-purple-500" size={23} />
+            Email: atul.kumar@example.com
+          </div>
+          <div className="flex items-center gap-3">
+            <PiGenderIntersexFill className="text-blue-500" size={23} />
+            Gender: Male
+          </div>
+          <div className="flex items-center gap-3">
+            <FaBookmark className="text-amber-500" size={23} />
+            Booked Over: 5 times
+          </div>
         </Typography>
       </Drawer>
       {/* Users Booking Section */}
@@ -235,9 +229,47 @@ const Booking = () => {
               <p>
                 Quantity: <strong className="text-gray-600">1</strong>
               </p>
-              <p className="text-gray-800 font-bold flex items-center gap-2">
-                Verification OTP: <span className="text-teal-500">1234</span>
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-gray-800 font-bold flex items-center gap-2">
+                  Verification OTP: <span className="text-teal-500">1234</span>
+                </p>
+                <Tooltip
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                  content={
+                    <div className="w-80">
+                      <Typography color="white" className="font-medium">
+                        Material Tailwind
+                      </Typography>
+                      <Typography
+                        variant="small"
+                        color="white"
+                        className="font-normal opacity-80"
+                      >
+                        Material Tailwind is an easy to use components library
+                        for Tailwind CSS and Material Design.
+                      </Typography>
+                    </div>
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-5 w-5 cursor-pointer text-blue-gray-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                    />
+                  </svg>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </section>
