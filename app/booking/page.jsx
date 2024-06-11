@@ -10,10 +10,7 @@ import {
   DialogBody,
 } from "@material-tailwind/react";
 import { RxCross1 } from "react-icons/rx";
-import {
-  Drawer,
-  Typography,
-} from "@material-tailwind/react";
+import { Drawer, Typography } from "@material-tailwind/react";
 import { FaEye, FaPhone } from "react-icons/fa6";
 import { IoMdMailOpen } from "react-icons/io";
 import { FaBookmark, FaRegStar } from "react-icons/fa";
@@ -129,45 +126,38 @@ const Booking = () => {
                 height={96}
               />
             </div>
-              <div className="">
+            <div className="">
               <Typography variant="h5" color="blue" className="font-semibold">
-              Kundan Kumar
-          </Typography>
+                Kundan Kumar
+              </Typography>
               <div className="text-gray-800 flex items-center gap-2 mx-auto  font-bold">
                 <Rating value={4} readonly /> 4.5
               </div>
-              </div>
-            
+            </div>
           </div>
         </div>
         <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <FaPhone className="text-teal-500" size={23}/>
-          Phone: +91 9508973152
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <IoMdMailOpen className="text-deep-purple-500 " size={23} />
-          Email: atul.kumar@example.com
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <PiGenderIntersexFill className="text-blue-500" size={23}/>
-          Gender: Male
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <FaBookmark className="text-amber-500" size={23} />
-          Booked Over: 5 times
-        </Typography>
+  color="gray"
+  className="mb-8 flex flex-col gap-3 items-start pr-4 font-normal"
+>
+  <div className="flex items-center gap-3">
+    <FaPhone className="text-teal-500" size={23} />
+    Phone: +91 9508973152
+  </div>
+  <div className="flex items-center gap-3">
+    <IoMdMailOpen className="text-deep-purple-500" size={23} />
+    Email: atul.kumar@example.com
+  </div>
+  <div className="flex items-center gap-3">
+    <PiGenderIntersexFill className="text-blue-500" size={23} />
+    Gender: Male
+  </div>
+  <div className="flex items-center gap-3">
+    <FaBookmark className="text-amber-500" size={23} />
+    Booked Over: 5 times
+  </div>
+</Typography>
+
       </Drawer>
       {/* Users Booking Section */}
       <div className=" container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
