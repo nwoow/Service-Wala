@@ -95,8 +95,16 @@ export default function Home() {
         } transition-all duration-700`}
       >
         <Nav />
+        <div className="areahome">
+        <ul class="circleshome">
+            <li class="shape1"></li>
+            <li class="shape2"></li>
+            <li class="shape3"></li>
+        </ul>
+    </div>
         <div className="flex flex-col lg:flex-row">
           {/* Left half */}
+          
           <div className="lg:w-1/2 pb-4 md:pb-20 pt-4 md:px-10 px-4 flex items-center">
             <div className="w-full">
               <p className="text-xl mb-1">Get Your Work done in a</p>

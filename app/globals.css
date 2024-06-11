@@ -233,3 +233,71 @@
   margin-top: 0 !important;
 }
 
+.areahome {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block; /* Ensure it's displayed by default */
+}
+.circleshome {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.circleshome li {
+  position: absolute;
+  width: 40px;
+  height: 40px; /* Blue and Violet Gradient */
+  animation: rotate 5s linear infinite;
+}
+.circleshome .shape2{
+animation: rotate2 5s linear infinite!important;
+}
+
+.shape1 {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  background: linear-gradient(135deg,#f6d365 , #fda085)!important;
+}
+
+.shape2 {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  background-image: linear-gradient(-225deg, #DFFFCD 0%, #90F9C4 48%, #39F3BB 100%);
+}
+
+.shape3 {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+}
+
+.circleshome li:nth-child(1) { top: 324px; left: 30%; z-index: -1; }
+.circleshome li:nth-child(2) { top: 230px; left: 3%; width: 100px; height: 100px; z-index: -1; }
+.circleshome li:nth-child(3) { top: 210px; left: 43%; z-index: -1; }
+
+@keyframes rotate {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+@keyframes rotate2 {
+  from {
+      transform: rotate(360deg);
+  }
+  to {
+      transform: rotate(0deg);
+  }
+}
+@media (max-width: 768px) {
+  .areahome {
+      display: none;
+  }
+}

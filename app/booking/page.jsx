@@ -8,25 +8,17 @@ import {
   IconButton,
   DialogHeader,
   DialogBody,
-  DialogFooter,
 } from "@material-tailwind/react";
 import { RxCross1 } from "react-icons/rx";
 import {
-  Popover,
-  PopoverHandler,
-  PopoverContent,
-  Avatar,
-  Button,
+  Drawer,
   Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
 } from "@material-tailwind/react";
 import { FaEye, FaPhone } from "react-icons/fa6";
 import { IoMdMailOpen } from "react-icons/io";
-import { PiGenderMaleFill } from "react-icons/pi";
 import { FaBookmark, FaRegStar } from "react-icons/fa";
 import { Rating } from "@material-tailwind/react";
+import { PiGenderIntersexFill } from "react-icons/pi";
 
 const Booking = () => {
   const checkingAuthorization = async () => {
@@ -88,22 +80,97 @@ const Booking = () => {
     { name: "AC Cleaning", price: 300, image: "/image/slider4.webp" },
     { name: "AC Gas Refill", price: 520, image: "/image/slider5.webp" },
   ];
-  // New state for popover visibility
-  const [showPopover, setShowPopover] = useState(false);
+  const [open1, setOpen1] = React.useState(false);
 
-  // Function to toggle popover visibility
-  const togglePopover = () => {
-    setShowPopover(!showPopover);
-  };
+  const openDrawer = () => setOpen1(true);
+  const closeDrawer = () => setOpen1(false);
 
-  const [serviceProviderPopOver, setServiceProviderPopOver] = useState(false);
-  const handleServiceProviderPopOver = () =>
-    setServiceProviderPopOver(!serviceProviderPopOver);
   return (
     <div className="userpage-bg min-h-screen">
       <Nav />
+      <Drawer
+        open={open1}
+        size={330}
+        overlay={false}
+        dismiss={{ enabled: false }}
+        onClose={closeDrawer}
+        className="p-4"
+      >
+        <div className="mb-6 flex items-center justify-between">
+          <Typography variant="h5" color="blue-gray">
+            Summary
+          </Typography>
+
+          <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              stroke="currentColor"
+              className="h-5 w-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </IconButton>
+        </div>
+        <div className="mb-4 flex flex-col   border-b border-blue-gray-50 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="">
+              <Image
+                src="/image/hero5.webp"
+                className="rounded-full h-12 w-12"
+                alt="Booking"
+                width={96}
+                height={96}
+              />
+            </div>
+              <div className="">
+              <Typography variant="h5" color="blue" className="font-semibold">
+              Kundan Kumar
+          </Typography>
+              <div className="text-gray-800 flex items-center gap-2 mx-auto  font-bold">
+                <Rating value={4} readonly /> 4.5
+              </div>
+              </div>
+            
+          </div>
+        </div>
+        <Typography
+          color="gray"
+          className="mb-8 flex gap-3 items-center pr-4 font-normal"
+        >
+          <FaPhone className="text-teal-500" size={23}/>
+          Phone: +91 9508973152
+        </Typography>
+        <Typography
+          color="gray"
+          className="mb-8 flex gap-3 items-center pr-4 font-normal"
+        >
+          <IoMdMailOpen className="text-deep-purple-500 " size={23} />
+          Email: atul.kumar@example.com
+        </Typography>
+        <Typography
+          color="gray"
+          className="mb-8 flex gap-3 items-center pr-4 font-normal"
+        >
+          <PiGenderIntersexFill className="text-blue-500" size={23}/>
+          Gender: Male
+        </Typography>
+        <Typography
+          color="gray"
+          className="mb-8 flex gap-3 items-center pr-4 font-normal"
+        >
+          <FaBookmark className="text-amber-500" size={23} />
+          Booked Over: 5 times
+        </Typography>
+      </Drawer>
       {/* Users Booking Section */}
-      <div className="max-w-5xl bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
+      <div className=" container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
         <header className="mb-8 flex flex-col sm:flex-row items-center justify-center mx-auto gap-2">
           <h1 className="font-julius text-center lg:text-4xl md:text-4xl sm:text-3xl text-3xl text-gray-700 font-bold">
             Booking Details
@@ -147,74 +214,12 @@ const Booking = () => {
               <p className="text-gray-800 font-bold flex items-center gap-2">
                 Status:{" "}
                 <span className="text-teal-500 rounded-md">Confirmed</span>
-                <Popover
-                  dismiss={{ enabled: false }}
-                  handler={handleServiceProviderPopOver}
-                  open={serviceProviderPopOver}
+                <div
+                  onClick={openDrawer}
+                  className="flex gap-2 cursor-pointer underline items-center "
                 >
-                  <PopoverHandler>
-                    <Button
-                      onClick={handleServiceProviderPopOver}
-                      className="px-4 py-2 bg-gray-100 underline text-gray-700 rounded-md text-sm font-medium hover:shadow-none  shadow-none focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 flex items-center gap-2"
-                    >
-                      View Detail
-                      <FaEye fontSize={23} />
-                    </Button>
-                  </PopoverHandler>
-                  <PopoverContent className="w-70 mx-auto">
-                    <div className="mb-4 flex flex-col   border-b border-blue-gray-50 pb-4">
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src="/image/hero5.webp"
-                          className="rounded-full h-12 w-12"
-                          alt="Booking"
-                          width={96}
-                          height={96}
-                        />
-                        <h3 className="font-julius lg:text-xl md:text-xl sm:text-lg text-lg text-gray-800 font-bold">
-                          Kundan Kumar
-                        </h3>
-                        <IconButton
-                          variant="text"
-                          onClick={handleServiceProviderPopOver}
-                        >
-                          <RxCross1 size={20} />
-                        </IconButton>
-                      </div>
-                      {/* Add star rating below the name */}
-                      <span className="text-gray-800 flex items-center gap-2 mx-auto  font-bold">
-                        <Rating value={4} readonly /> 4.5
-                      </span>
-                    </div>
-                    {/* Add star rating below the name */}
-                    <List className="p-0">
-                      <ListItem>
-                        <ListItemPrefix>
-                          <FaPhone color="#90A4AE" />
-                        </ListItemPrefix>
-                        Phone: +91 9508973152
-                      </ListItem>
-                      <ListItem>
-                        <ListItemPrefix>
-                          <IoMdMailOpen color="#90A4AE" />
-                        </ListItemPrefix>
-                        Email: atul.kumar@example.com
-                      </ListItem>
-                      <ListItem>
-                        <ListItemPrefix>
-                          <PiGenderMaleFill color="#90A4AE" />
-                        </ListItemPrefix>
-                        Gender: Male
-                      </ListItem>
-                      <ListItem>
-                        <ListItemPrefix>
-                          <FaBookmark color="#90A4AE" />
-                        </ListItemPrefix>
-                        Booked Over: 5 times
-                      </ListItem>
-                    </List>
-                  </PopoverContent>
-                </Popover>
+                  View Detail <FaEye fontSize={20} />
+                </div>
               </p>
             </div>
             <div className="leading-9">
