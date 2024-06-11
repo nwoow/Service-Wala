@@ -67,6 +67,7 @@ const ReviewCard = ({ name, review, rating, img }) => (
           src={img}
           alt={name}
           layout="fill"
+          sizes="20"
           objectFit="cover"
           className="rounded-full"
         />
@@ -185,7 +186,9 @@ const ServiceProvider = () => {
   }, []);
 
   const filteredServices = useMemo(() => {
-    return allServices.filter((e) => !user.services?.includes(e._id));
+    if (user.services) {
+      return allServices.filter((e) => !user.services.includes(e._id));
+    }
   }, [allServices, user.services]);
 
   const handleUpdateServices = useCallback(async () => {
@@ -203,24 +206,36 @@ const ServiceProvider = () => {
 
   const handleDeleteService = useCallback(
     async (serviceId) => {
-      const deletedServicesFiltered = updatedServices.filter(
-        (e) => e !== serviceId
-      );
-      const response = await fetch(`/api/service-providers/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...updateUser,
-          services: deletedServicesFiltered,
-        }),
-      });
-      if (response.ok) {
-        setUpdatedServices(deletedServicesFiltered);
-        setFetchedServicesFromId((prev) =>
-          prev.filter((s) => s._id !== serviceId)
+      try {
+        // Filter out the service to be deleted
+        const deletedServicesFiltered = updatedServices.filter(
+          (e) => e !== serviceId
         );
-        setOpen2(false);
-        gettingUser();
+
+        // Send request to update the service provider's services
+        const response = await fetch(`/api/service-providers/${id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...updateUser,
+            services: deletedServicesFiltered,
+          }),
+        });
+
+        // Check if the response is successful
+        if (response.ok) {
+          // Update local state to reflect changes
+          setUpdatedServices(deletedServicesFiltered);
+          setFetchedServicesFromId((prev) =>
+            prev.filter((s) => s._id !== serviceId)
+          );
+          setOpen2(false);
+          gettingUser(); // Re-fetch user data to ensure state is in sync
+        } else {
+          console.error("Failed to delete service");
+        }
+      } catch (err) {
+        console.error("Error deleting service:", err);
       }
     },
     [id, updateUser, updatedServices, gettingUser]
@@ -273,6 +288,7 @@ const ServiceProvider = () => {
       isMounted = false;
     };
   }, []);
+
 
   if (loading) {
     return (
@@ -526,7 +542,7 @@ const ServiceProvider = () => {
                 </h2>
                 <div className="p-6 flex gap-4 items-center h-full">
                   <div className="grid grid-cols-3 gap-4">
-                    {filteredServices.map((service, index) => {
+                    {filteredServices?.map((service, index) => {
                       return (
                         <ListItem className="p-0" key={index}>
                           <label
@@ -548,7 +564,6 @@ const ServiceProvider = () => {
                                     );
                                   }
                                 }}
-                                checked={updatedServices.includes(service._id)}
                                 value={service.name}
                                 ripple={false}
                                 className="hover:before:opacity-0"
@@ -595,33 +610,31 @@ const ServiceProvider = () => {
               </Dialog>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
-              {fetchedServicesFromId?.map((service, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    ripple={false}
-                    className="py-2 text-gray-700 text-xl"
-                  >
-                    <img
-                      src={service?.icon?.url}
-                      alt=""
-                      className="w-10 object-cover mr-2"
-                    />
-                    {service?.name}
-                    <ListItemSuffix>
-                      <IconButton
-                        variant="text"
-                        color="red"
-                        onClick={() => {
-                          handleDeleteService(service._id);
-                        }}
-                      >
-                        <MdDelete size={25} />
-                      </IconButton>
-                    </ListItemSuffix>
-                  </ListItem>
-                );
-              })}
+              {fetchedServicesFromId?.map((service, index) => (
+                <ListItem
+                  key={index}
+                  ripple={false}
+                  className="py-2 text-gray-700 text-xl"
+                >
+                  <img
+                    src={service?.icon?.url}
+                    alt=""
+                    className="w-10 object-cover mr-2"
+                  />
+                  {service?.name}
+                  <ListItemSuffix>
+                    <IconButton
+                      variant="text"
+                      color="red"
+                      onClick={() => {
+                        handleDeleteService(service._id);
+                      }}
+                    >
+                      <MdDelete size={25} />
+                    </IconButton>
+                  </ListItemSuffix>
+                </ListItem>
+              ))}
             </div>
           </div>
           <ServiceProviderLocation serviceProvider={user} />
