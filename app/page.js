@@ -155,7 +155,7 @@ export default function Home() {
               <div className="flex w-full flex-col md:flex-row justify-center flex-nowrap items-center gap-4 mt-8">
                 <Link
                   href={"/services"}
-                  className="px-6 py-4 w-full md:w-fit outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hoverbg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white"
+                  className="px-6 py-4 w-full md:w-fit outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hover:bg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white"
                 >
                   Find a Service <RxDoubleArrowRight size={18} />
                 </Link>
@@ -331,7 +331,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-3xl">
           <Link
             href={"/services"}
-            className="lg:w-full md:w-full sm:w-full w-full bg-blue-500 flex justify-center text-white font-semibold py-3 px-6 rounded-md mb-6"
+            className=" px-6 py-3 w-full outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hover:bg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white  "
           >
             Book a Service »
           </Link>
@@ -342,7 +342,7 @@ export default function Home() {
           </div>
           <Link
             href={"/service-provider/create"}
-            className="lg:w-full md:w-full sm:w-full w-full border border-blue-500 text-blue-500 font-semibold py-3 px-6 rounded-md flex items-center justify-center"
+            className="px-6 py-3 w-full  transition-all flex gap-1 items-center justify-center duration-700 rounded-md hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:text-white outline outline-2 outline-blue-500 text-blue-500 font-semibold"
           >
             Become a service provider{" "}
             <span className="ml-2">

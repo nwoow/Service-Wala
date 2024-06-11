@@ -13,8 +13,7 @@ module.exports = withMT({
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
@@ -22,6 +21,20 @@ module.exports = withMT({
         julius: ["Julius Sans One", "sans-serif"],
         cookie: ["Cookie", "cursive"],
         itim: ["Itim", "cursive"],
+      },
+      keyframes: {
+        upDown: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        breathing: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+        },
+      },
+      animation: {
+        upDown: 'upDown 2s ease-in-out infinite',
+        breathing: 'breathing 2s ease-in-out infinite',
       },
     },
   },

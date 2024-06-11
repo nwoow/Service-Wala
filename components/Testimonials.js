@@ -2,23 +2,29 @@ import { useEffect, useState } from "react";
 
 const testimonials = [
   {
-    name: "Maria Kate",
+    name: "Ramesh Kumar",
     image:
       "https://img.freepik.com/free-photo/medium-shot-smiley-man-posing_23-2149915892.jpg?t=st=1716364756~exp=1716368356~hmac=6861a2a425d375a48ca9f795b11f41a4f960f25bad703b6898d9b2959c3d23ca&w=360",
     testimonial:
-      "In ac turpis justo. Vivamus auctor quam vitae odio feugiat pulvinar. Sed semper ligula sed lorem tincidunt dignissim. Nam sed cursus lectus. Proin non rutrum magna. Proin gravida.",
+      "I had a ceiling fan that was making a terrible noise. Service Wallah came and fixed it quickly and efficiently. The technician was polite, on time, and knew exactly what to do. Thank you for the excellent service!",
   },
   {
-    name: "John Doe",
+    name: "Anil Kumar",
     image: "https://img.freepik.com/free-photo/beautiful-male-half-length-portrait-isolated-white-studio-background-young-emotional-hindu-man-blue-shirt-facial-expression-human-emotions-advertising-concept-standing-smiling_155003-25250.jpg?t=st=1716364719~exp=1716368319~hmac=546ca7bf121267955fa0beaa40b7945c65ddc621f33d8bbe5734070783a628cf&w=996",
     testimonial:
-      "Maecenas auctor, quam eget tincidunt pretium, felis diam semper turpis, sed scelerisque diam libero facilisis libero. Quisque vitae semper metus. Aliquam eu dui aliquam, faucibus metus quis, elementum nunc.",
+      "I had a ceiling fan that was making a terrible noise. Service Wallah came and fixed it quickly and efficiently. The technician was polite, on time, and knew exactly what to do. Thank you for the excellent service!",
   },
   {
-    name: "Anna Deynah",
+    name: "Sunita Kumari",
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     testimonial:
-      "Duis sagittis, turpis in ullamcorper venenatis, ligula nibh porta dui, sit amet rutrum enim massa in ante. Curabitur in justo at lorem laoreet ultricies. Nunc ligula felis, sagittis eget nisi vitae ex arcu sit amet erat.",
+      "The plumbing services from Service Wallah were outstanding. They resolved a persistent issue with my bathroom sink that other services couldn't fix. I appreciate their dedication and thoroughness. Will definitely use them again!",
+  },
+  {
+    name: "Anita Kumari",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    testimonial:
+      "Service Wallah is my go-to for any home maintenance needs. Their appliance maintenance service is top-notch. My washing machine is now running like new. Their team is always friendly, reliable, and professional.",
   },
 ];
 
