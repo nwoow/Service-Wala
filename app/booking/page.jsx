@@ -139,31 +139,24 @@ const Booking = () => {
         </div>
         <Typography
           color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
+          className="mb-8 flex flex-col gap-3 items-start pr-4 font-normal"
         >
-          <FaPhone className="text-teal-500" size={23} />
-          Phone: +91 9508973152
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <IoMdMailOpen className="text-deep-purple-500 " size={23} />
-          Email: atul.kumar@example.com
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <PiGenderIntersexFill className="text-blue-500" size={23} />
-          Gender: Male
-        </Typography>
-        <Typography
-          color="gray"
-          className="mb-8 flex gap-3 items-center pr-4 font-normal"
-        >
-          <FaBookmark className="text-amber-500" size={23} />
-          Booked Over: 5 times
+          <div className="flex items-center gap-3">
+            <FaPhone className="text-teal-500" size={23} />
+            Phone: +91 9508973152
+          </div>
+          <div className="flex items-center gap-3">
+            <IoMdMailOpen className="text-deep-purple-500" size={23} />
+            Email: atul.kumar@example.com
+          </div>
+          <div className="flex items-center gap-3">
+            <PiGenderIntersexFill className="text-blue-500" size={23} />
+            Gender: Male
+          </div>
+          <div className="flex items-center gap-3">
+            <FaBookmark className="text-amber-500" size={23} />
+            Booked Over: 5 times
+          </div>
         </Typography>
       </Drawer>
       {/* Users Booking Section */}
