@@ -184,9 +184,12 @@ function Shipping() {
     const otp = Math.floor(1000 + Math.random() * 9000);
     return otp.toString();
   }
-  const getServiceProvidersForCartItems = async (cartItems, nearestServiceProviders) => {
+  const getServiceProvidersForCartItems = async (
+    cartItems,
+    nearestServiceProviders
+  ) => {
     const serviceProviderMap = new Map();
-  
+
     // Function to process service provider services
     const processServiceProvider = async (sp) => {
       if (sp?.services?.length > 0 && !serviceProviderMap.has(sp._id)) {
@@ -201,12 +204,12 @@ function Shipping() {
         }
       }
     };
-  
+
     // Fetch services for all service providers in parallel
     await Promise.all(nearestServiceProviders.map(processServiceProvider));
-  
+
     const availableServiceProviders = [];
-  
+
     // Function to check if a service provider has the cart item service
     const checkServiceProviderForCartItem = (cartItem) => {
       nearestServiceProviders.forEach((sp) => {
@@ -224,15 +227,50 @@ function Shipping() {
         });
       });
     };
-  
+
     // Check each cart item against the service providers
     cartItems.forEach(checkServiceProviderForCartItem);
-  
+
     return availableServiceProviders;
   };
+
+  const [ServiceProviderFound, setServiceProviderFound] = useState("waiting");
+  const [serviceProviderNotFoundError, setServiceProviderNotFoundError] =
+    useState("Try a different location!");
+
   const handleSumbitOrderViaCash = async () => {
     handleCompletedDailog();
     const location = JSON.parse(localStorage.getItem("location"));
+
+    const { lat, lng } = location;
+    const nearestServiceProviders = [];
+    const uniqueServiceProviders = new Set();
+    const serviceProviders = (await axios.get(`/api/service-providers`)).data;
+
+    serviceProviders.forEach((sp) => {
+      sp.locations.forEach((s) => {
+        const dis = getDistance(lat, lng, s.lat, s.lng);
+        if (dis <= 15 && !uniqueServiceProviders.has(sp._id)) {
+          nearestServiceProviders.push(sp);
+          uniqueServiceProviders.add(sp._id);
+        }
+      });
+    });
+    if (nearestServiceProviders.length <= 0) {
+      setServiceProviderFound("not found");
+      setServiceProviderNotFoundError("Try a different location!");
+      return;
+    }
+    const availableServiceProviders = await getServiceProvidersForCartItems(
+      cartItems,
+      nearestServiceProviders
+    );
+    if (availableServiceProviders.length <= 0) {
+      setServiceProviderFound("not found");
+      setServiceProviderNotFoundError("Choose a different service");
+      return;
+    }
+    setServiceProviderFound("found");
     const otp = generateOTP();
     const postData = {
       ...formData,
@@ -255,29 +293,7 @@ function Shipping() {
         cartItems,
         orderId: response.data._id,
       });
-      const serviceProviders = (await axios.get(`/api/service-providers`)).data;
-      const { lat, lng } = location;
-      const nearestServiceProviders = [];
-      const uniqueServiceProviders = new Set();
-
-      // Find the service providers within for related to the cart items
-      // Problems:
-      // service and sub service id is different get sub service
-      // Other solution is check the cart item name is same as the service name or it's sub service name!
-
-      serviceProviders.forEach((sp) => {
-        sp.locations.forEach((s) => {
-          const dis = getDistance(lat, lng, s.lat, s.lng);
-          if (dis <= 15 && !uniqueServiceProviders.has(sp._id)) {
-            nearestServiceProviders.push(sp);
-            uniqueServiceProviders.add(sp._id);
-          }
-        });
-      });      
-      const availableServiceProviders = await getServiceProvidersForCartItems(cartItems, nearestServiceProviders);
-      console.log({ nearestServiceProviders });
-      console.log({ availableServiceProviders });
-      // localStorage.removeItem("cart");
+      localStorage.removeItem("cart");
     } catch (error) {
       console.error(`Error updating service ${serviceId}:`, error);
     }
@@ -487,34 +503,97 @@ function Shipping() {
                 <Dialog
                   open={completedDailog}
                   handler={handleCompletedDailog}
-                  // dismiss={{ enabled: false }}
-                  className="p-3 bg-gray-100"
+                  dismiss={{ enabled: false }}
+                  className="bg-gray-100"
                   size="xs"
                 >
-                  <div className="flex justify-center items-center">
-                    <Typography
-                      variant="h5"
-                      className="text-teal-500 text-center"
-                    >
-                      Service Booked Successfully
-                    </Typography>
-                  </div>
-                  <Player
-                    autoplay
-                    // loop
-                    keepLastFrame={true}
-                    src="/lottie/tick1.json"
-                  ></Player>
-                  <Link href={"/booking"}>
-                    <Button
-                      fullWidth
-                      color="teal"
-                      variant="gradient"
-                      className="flex gap-1 transition-all hover:gap-2 items-center justify-center"
-                    >
-                      Go to Bookings
-                    </Button>
-                  </Link>
+                  {ServiceProviderFound === "waiting" ? (
+                    <div className="p-3 w-full h-full">
+                      <div className="flex justify-center flex-col items-center">
+                        <Typography
+                          variant="h5"
+                          className="text-orange-700 text-center"
+                        >
+                          Please Wait
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          className="text-gray-700 text-center"
+                        >
+                          While we search for the nearest service provider
+                        </Typography>
+                      </div>
+                      <Player
+                        autoplay
+                        loop
+                        keepLastFrame={true}
+                        src="/lottie/waiting.json"
+                      ></Player>
+                    </div>
+                  ) : ServiceProviderFound === "not found" ? (
+                    <div className="relative">
+                      <div className="flex justify-center items-center absolute bottom-14 w-full">
+                        <Typography
+                          variant="paragraph"
+                          className="text-gray-500 text-center"
+                        >
+                          No Service provider found
+                        </Typography>
+                      </div>
+                      <Player
+                        autoplay
+                        loop
+                        keepLastFrame={true}
+                        src="/lottie/not-found.json"
+                      ></Player>
+                      <div className="p-3">
+                        <Link
+                          href={`${
+                            serviceProviderNotFoundError ===
+                            "Try a different location!"
+                              ? "/location"
+                              : "services"
+                          }`}
+                        >
+                          <Button
+                            fullWidth
+                            color="deep-orange"
+                            variant="gradient"
+                            className="flex gap-1 transition-all hover:gap-2 items-center justify-center rounded"
+                          >
+                            {serviceProviderNotFoundError}
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-3">
+                      <div className="flex justify-center items-center">
+                        <Typography
+                          variant="h5"
+                          className="text-teal-500 text-center"
+                        >
+                          Service Booked Successfully
+                        </Typography>
+                      </div>
+                      <Player
+                        autoplay
+                        // loop
+                        keepLastFrame={true}
+                        src="/lottie/found.json"
+                      ></Player>
+                      <Link href={"/booking"}>
+                        <Button
+                          fullWidth
+                          color="teal"
+                          variant="gradient"
+                          className="flex gap-1 transition-all hover:gap-2 items-center justify-center"
+                        >
+                          Go to Bookings
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
                 </Dialog>
               </div>
             </Dialog>

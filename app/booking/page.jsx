@@ -95,6 +95,10 @@ const Booking = () => {
   const togglePopover = () => {
     setShowPopover(!showPopover);
   };
+
+  const [serviceProviderPopOver, setServiceProviderPopOver] = useState(false);
+  const handleServiceProviderPopOver = () =>
+    setServiceProviderPopOver(!serviceProviderPopOver);
   return (
     <div className="userpage-bg min-h-screen">
       <Nav />
@@ -143,9 +147,16 @@ const Booking = () => {
               <p className="text-gray-800 font-bold flex items-center gap-2">
                 Status:{" "}
                 <span className="text-teal-500 rounded-md">Confirmed</span>
-                <Popover placement="bottom-end">
+                <Popover
+                  dismiss={{ enabled: false }}
+                  handler={handleServiceProviderPopOver}
+                  open={serviceProviderPopOver}
+                >
                   <PopoverHandler>
-                    <Button className="px-4 py-2 bg-gray-100 underline text-gray-700 rounded-md text-sm font-medium hover:shadow-none  shadow-none focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 flex items-center gap-2">
+                    <Button
+                      onClick={handleServiceProviderPopOver}
+                      className="px-4 py-2 bg-gray-100 underline text-gray-700 rounded-md text-sm font-medium hover:shadow-none  shadow-none focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 flex items-center gap-2"
+                    >
                       View Detail
                       <FaEye fontSize={23} />
                     </Button>
@@ -163,7 +174,10 @@ const Booking = () => {
                         <h3 className="font-julius lg:text-xl md:text-xl sm:text-lg text-lg text-gray-800 font-bold">
                           Kundan Kumar
                         </h3>
-                        <IconButton variant="text" onClick={handleOpenDialog}>
+                        <IconButton
+                          variant="text"
+                          onClick={handleServiceProviderPopOver}
+                        >
                           <RxCross1 size={20} />
                         </IconButton>
                       </div>

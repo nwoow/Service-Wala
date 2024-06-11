@@ -1,7 +1,6 @@
 import connectMongoDB from "@/libs/mongodb";
 import Service from "@/models/Service";
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 
 export async function POST(request) {
   try {
@@ -12,10 +11,7 @@ export async function POST(request) {
     const serviceIds = await request.json();
 
     // Ensure serviceIds is an array of valid MongoDB ObjectIDs
-    if (
-      !Array.isArray(serviceIds) ||
-      !serviceIds.every((id) => mongoose.Types.ObjectId.isValid(id))
-    ) {
+    if (!Array.isArray(serviceIds)) {
       return NextResponse.json(
         { error: "Invalid service IDs" },
         { status: 400 }
