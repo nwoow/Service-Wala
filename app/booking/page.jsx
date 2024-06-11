@@ -8,12 +8,10 @@ import {
   IconButton,
   DialogHeader,
   DialogBody,
+  Tooltip,
 } from "@material-tailwind/react";
 import { RxCross1 } from "react-icons/rx";
-import {
-  Drawer,
-  Typography,
-} from "@material-tailwind/react";
+import { Drawer, Typography } from "@material-tailwind/react";
 import { FaEye, FaPhone } from "react-icons/fa6";
 import { IoMdMailOpen } from "react-icons/io";
 import { FaBookmark, FaRegStar } from "react-icons/fa";
@@ -129,22 +127,21 @@ const Booking = () => {
                 height={96}
               />
             </div>
-              <div className="">
+            <div className="">
               <Typography variant="h5" color="blue" className="font-semibold">
-              Kundan Kumar
-          </Typography>
+                Kundan Kumar
+              </Typography>
               <div className="text-gray-800 flex items-center gap-2 mx-auto  font-bold">
                 <Rating value={4} readonly /> 4.5
               </div>
-              </div>
-            
+            </div>
           </div>
         </div>
         <Typography
           color="gray"
           className="mb-8 flex gap-3 items-center pr-4 font-normal"
         >
-          <FaPhone className="text-teal-500" size={23}/>
+          <FaPhone className="text-teal-500" size={23} />
           Phone: +91 9508973152
         </Typography>
         <Typography
@@ -158,7 +155,7 @@ const Booking = () => {
           color="gray"
           className="mb-8 flex gap-3 items-center pr-4 font-normal"
         >
-          <PiGenderIntersexFill className="text-blue-500" size={23}/>
+          <PiGenderIntersexFill className="text-blue-500" size={23} />
           Gender: Male
         </Typography>
         <Typography
@@ -235,9 +232,47 @@ const Booking = () => {
               <p>
                 Quantity: <strong className="text-gray-600">1</strong>
               </p>
-              <p className="text-gray-800 font-bold flex items-center gap-2">
-                Verification OTP: <span className="text-teal-500">1234</span>
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-gray-800 font-bold flex items-center gap-2">
+                  Verification OTP: <span className="text-teal-500">1234</span>
+                </p>
+                <Tooltip
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                  content={
+                    <div className="w-80">
+                      <Typography color="white" className="font-medium">
+                        Material Tailwind
+                      </Typography>
+                      <Typography
+                        variant="small"
+                        color="white"
+                        className="font-normal opacity-80"
+                      >
+                        Material Tailwind is an easy to use components library
+                        for Tailwind CSS and Material Design.
+                      </Typography>
+                    </div>
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-5 w-5 cursor-pointer text-blue-gray-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                    />
+                  </svg>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </section>
