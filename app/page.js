@@ -96,15 +96,15 @@ export default function Home() {
       >
         <Nav />
         <div className="areahome">
-        <ul class="circleshome">
+          <ul class="circleshome">
             <li class="shape1"></li>
             <li class="shape2"></li>
             <li class="shape3"></li>
-        </ul>
-    </div>
+          </ul>
+        </div>
         <div className="flex flex-col lg:flex-row">
           {/* Left half */}
-          
+
           <div className="lg:w-1/2 pb-4 md:pb-20 pt-4 md:px-10 px-4 flex items-center">
             <div className="w-full">
               <p className="text-xl mb-1">Get Your Work done in a</p>
@@ -286,7 +286,8 @@ export default function Home() {
             />
           </Carousel>
         </div>
-        <div className="w-full flex flex-col justify-center items-center py-4 px-4">
+        <div style={{backgroundImage: 'url(/image/shape-3-2.png)', backgroundRepeat: 'no-repeat'}}>
+        <div className="w-full flex flex-col justify-center items-center py-4 px-4" >
           <h1 className="font-julius lg:text-5xl md:text-4xl sm:text-3xl text-3xl text-center text-gray-700">
             FOR ALL YOUR NEEDS WE PROVIDES
           </h1>
@@ -302,6 +303,7 @@ export default function Home() {
               </div>
             ))}
           </Slider>
+        </div>
         </div>
 
         <div className="w-full flex flex-col justify-center items-center py-4 px-4">
@@ -325,13 +327,17 @@ export default function Home() {
             alt=""
           />
         </div>
+
         <div className="px-4 lg:px-20 pb-6 w-full ">
           <ServiceSection />
         </div>
-        <div className="flex flex-col items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-3xl">
+        <div
+          className="flex flex-col items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-3xl bg-cover bg-center  " 
+        >
+          {/* This adds an overlay to increase readability of text */}
           <Link
             href={"/services"}
-            className=" px-6 py-3 w-full outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hover:bg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white  "
+            className="px-6 py-3 w-full outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hover:bg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white"
           >
             Book a Service »
           </Link>
@@ -350,6 +356,7 @@ export default function Home() {
             </span>
           </Link>
         </div>
+
         <div className="w-full flex flex-col justify-center items-center py-4 px-4">
           <h1 className="font-julius  lg:text-5xl md:text-4xl sm:text-3xl text-3xl text-center text-gray-700">
             SOME REVIEWS OF OUR
