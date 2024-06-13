@@ -56,7 +56,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-300 shadow-inner text-black py-10">
+    <footer className="bg-gray-300 shadow-inner text-black py-10 "   style={{backgroundImage: 'url(/image/shape-3-2.png)', backgroundRepeat: 'no-repeat'}}>
       <div className="px-14 flex   justify-between flex-col md:flex-row ">
         {/* Company Description */}
         <div className="md:w-1/3 mb-6 lg:mb-0 px-4 w-full">

@@ -13,7 +13,10 @@ import {
   Button,
 } from "@material-tailwind/react";
 import { RxCross1 } from "react-icons/rx";
-import { Drawer, Typography } from "@material-tailwind/react";
+import {
+  Drawer,
+  Typography,
+} from "@material-tailwind/react";
 import { FaEye, FaPhone } from "react-icons/fa6";
 import { IoMdMailOpen } from "react-icons/io";
 import { FaBookmark, FaRegStar } from "react-icons/fa";
@@ -199,14 +202,15 @@ const Booking = () => {
                 height={96}
               />
             </div>
-            <div className="">
+              <div className="">
               <Typography variant="h5" color="blue" className="font-semibold">
-                Kundan Kumar
-              </Typography>
+              Kundan Kumar
+          </Typography>
               <div className="text-gray-800 flex items-center gap-2 mx-auto  font-bold">
                 <Rating value={4} readonly /> 4.5
               </div>
-            </div>
+              </div>
+            
           </div>
         </div>
         <div

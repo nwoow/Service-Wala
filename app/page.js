@@ -96,15 +96,15 @@ export default function Home() {
       >
         <Nav />
         <div className="areahome">
-        <ul class="circleshome">
+          <ul class="circleshome">
             <li class="shape1"></li>
             <li class="shape2"></li>
             <li class="shape3"></li>
-        </ul>
-    </div>
+          </ul>
+        </div>
         <div className="flex flex-col lg:flex-row">
           {/* Left half */}
-          
+
           <div className="lg:w-1/2 pb-4 md:pb-20 pt-4 md:px-10 px-4 flex items-center">
             <div className="w-full">
               <p className="text-xl mb-1">Get Your Work done in a</p>
@@ -155,7 +155,7 @@ export default function Home() {
               <div className="flex w-full flex-col md:flex-row justify-center flex-nowrap items-center gap-4 mt-8">
                 <Link
                   href={"/services"}
-                  className="px-6 py-4 w-full md:w-fit outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hoverbg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white"
+                  className="px-6 py-4 w-full md:w-fit outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hover:bg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white"
                 >
                   Find a Service <RxDoubleArrowRight size={18} />
                 </Link>
@@ -286,7 +286,8 @@ export default function Home() {
             />
           </Carousel>
         </div>
-        <div className="w-full flex flex-col justify-center items-center py-4 px-4">
+        <div style={{backgroundImage: 'url(/image/shape-3-2.png)', backgroundRepeat: 'no-repeat'}}>
+        <div className="w-full flex flex-col justify-center items-center py-4 px-4" >
           <h1 className="font-julius lg:text-5xl md:text-4xl sm:text-3xl text-3xl text-center text-gray-700">
             FOR ALL YOUR NEEDS WE PROVIDES
           </h1>
@@ -302,6 +303,7 @@ export default function Home() {
               </div>
             ))}
           </Slider>
+        </div>
         </div>
 
         <div className="w-full flex flex-col justify-center items-center py-4 px-4">
@@ -325,13 +327,17 @@ export default function Home() {
             alt=""
           />
         </div>
+
         <div className="px-4 lg:px-20 pb-6 w-full ">
           <ServiceSection />
         </div>
-        <div className="flex flex-col items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-3xl">
+        <div
+          className="flex flex-col items-center justify-center bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 mx-auto max-w-3xl bg-cover bg-center  " 
+        >
+          {/* This adds an overlay to increase readability of text */}
           <Link
             href={"/services"}
-            className="lg:w-full md:w-full sm:w-full w-full bg-blue-500 flex justify-center text-white font-semibold py-3 px-6 rounded-md mb-6"
+            className="px-6 py-3 w-full outline transition-all duration-700 flex justify-center items-center rounded-md gap-1 hover:bg-gradient-to-r hover:from-transparent hover:to-transparent hover:text-blue-600 outline-none hover:outline-blue-600 hover:outline-2 bg-gradient-to-tr from-blue-400 to-blue-600 font-semibold text-white"
           >
             Book a Service »
           </Link>
@@ -342,7 +348,7 @@ export default function Home() {
           </div>
           <Link
             href={"/service-provider/create"}
-            className="lg:w-full md:w-full sm:w-full w-full border border-blue-500 text-blue-500 font-semibold py-3 px-6 rounded-md flex items-center justify-center"
+            className="px-6 py-3 w-full  transition-all flex gap-1 items-center justify-center duration-700 rounded-md hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-600 hover:text-white outline outline-2 outline-blue-500 text-blue-500 font-semibold"
           >
             Become a service provider{" "}
             <span className="ml-2">
@@ -350,6 +356,7 @@ export default function Home() {
             </span>
           </Link>
         </div>
+
         <div className="w-full flex flex-col justify-center items-center py-4 px-4">
           <h1 className="font-julius  lg:text-5xl md:text-4xl sm:text-3xl text-3xl text-center text-gray-700">
             SOME REVIEWS OF OUR
