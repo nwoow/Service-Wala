@@ -7,8 +7,7 @@ const bookingSchema = new Schema(
       required: true,
     },
     status: {
-      type: Boolean,
-      required: true,
+      type: String,
     },
     completed: {
       type: Boolean,
@@ -30,7 +29,7 @@ const bookingSchema = new Schema(
     sendedToServiceProvider: {
       type: Boolean,
     },
-    cashCollected: {
+    paymentCompleted: {
       type: Boolean,
     },
     date: {
@@ -42,13 +41,25 @@ const bookingSchema = new Schema(
     otp: {
       type: String,
     },
+    otpVerified: {
+      type: Boolean,
+      default: false,
+    },
     paymentMethod: { type: String, required: true },
-    VerificationImage: {
+    verificationImage: {
       type: Object,
       default: {
         url: "",
         name: "",
       },
+    },
+    availableServiceProviders: {
+      type: Array,
+      default: [],
+    },
+    assignedServiceProviders: {
+      type: Array,
+      default: [],
     },
     location: {
       type: Object,

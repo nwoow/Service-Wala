@@ -238,7 +238,7 @@ function Shipping() {
   const [serviceProviderNotFoundError, setServiceProviderNotFoundError] =
     useState("Try a different location!");
 
-  const handleSumbitOrderViaCash = async () => {
+  const handleSumbitOrderViaPod = async () => {
     handleCompletedDailog();
     const location = JSON.parse(localStorage.getItem("location"));
 
@@ -274,7 +274,7 @@ function Shipping() {
     const otp = generateOTP();
     const postData = {
       ...formData,
-      paymentMethod: "Via Cash",
+      paymentMethod: "POD",
       location,
       cartItems,
       status: false,
@@ -459,7 +459,7 @@ function Shipping() {
               Continue to payements
             </button>
             <Dialog
-              size="sm"
+              size="md"
               open={paymentDailog}
               handler={handlePaymentDailog}
               dismiss={{ enabled: false }}
@@ -473,31 +473,25 @@ function Shipping() {
                   <RxCross1 size={20} />
                 </IconButton>
               </div>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2 justify-between cursor-pointer bg-white hover:scale-105 transition-all shadow-lg border px-4 py-6 rounded-lg">
-                  <div className="font-medium text-xl font-itim text-indigo-500">
-                    Pay with phone pay / UPi
+              <div className="flex gap-4 items-center flex-col md:flex-row">
+                <div className="flex w-full min-h-24 items-center gap-2 justify-center cursor-pointer bg-white hover:scale-105 transition-all shadow-lg border px-4 py-6 rounded-lg">
+                  <div className="w-12">
+                    <Player autoplay loop src="/lottie/online.json"></Player>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <SiPhonepe size={30} color="#6739b7" />
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg"
-                      className="w-16 object-cover"
-                    />
+                  <div className="font-semibold font-julius text-md text-gray-600 flex items-center gap-2">
+                    {/* <SiPhonepe size={30} color="#6739b7" /> */}
+                    Pay Before service
                   </div>
                 </div>
                 <div
-                  onClick={handleSumbitOrderViaCash}
-                  className="flex items-center gap-2 justify-between cursor-pointer bg-white hover:scale-105 transition-all shadow-lg border p-4 rounded-lg"
+                  onClick={handleSumbitOrderViaPod}
+                  className="flex w-full min-h-24 items-center gap-2 justify-center cursor-pointer bg-white hover:scale-105 transition-all shadow-lg border p-4 rounded-lg"
                 >
-                  <div className="font-medium text-xl font-itim text-indigo-500">
-                    Pay with cash
+                  <div className="w-12">
+                    <Player autoplay loop src="/lottie/pod.json"></Player>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <img
-                      src="/icons/payment.png"
-                      className="w-12 object-cover"
-                    />
+                  <div className="font-semibold font-julius text-md text-gray-600 flex items-center gap-2">
+                    Pay after service
                   </div>
                 </div>
                 <Dialog
@@ -537,7 +531,11 @@ function Shipping() {
                           variant="paragraph"
                           className="text-gray-500 text-center"
                         >
-                          No Service provider found
+                          No Service provider found{" "}
+                          {serviceProviderNotFoundError ===
+                          "Try a different location!"
+                            ? "in your location"
+                            : "related to your service"}
                         </Typography>
                       </div>
                       <Player

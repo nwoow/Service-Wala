@@ -13,13 +13,16 @@ import {
   Button,
 } from "@material-tailwind/react";
 import { RxCross1 } from "react-icons/rx";
-import {
-  Drawer,
-  Typography,
-} from "@material-tailwind/react";
+import { Drawer, Typography } from "@material-tailwind/react";
 import { FaEye, FaPhone } from "react-icons/fa6";
 import { IoMdMailOpen } from "react-icons/io";
-import { FaBookmark, FaRegStar } from "react-icons/fa";
+import {
+  FaAngleDoubleRight,
+  FaBookmark,
+  FaCheckCircle,
+  FaRegSadCry,
+  FaRegStar,
+} from "react-icons/fa";
 import { Rating } from "@material-tailwind/react";
 import { PiGenderIntersexFill } from "react-icons/pi";
 import axios from "axios";
@@ -29,6 +32,16 @@ import {
   Marker,
   LoadScriptNext,
 } from "@react-google-maps/api";
+import { MdOutlineCloudUpload, MdVerified } from "react-icons/md";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { storage } from "@/firebase";
+import Link from "next/link";
 
 const Booking = () => {
   const checkingAuthorization = async () => {
@@ -61,32 +74,6 @@ const Booking = () => {
   const [open, setOpen] = useState(false);
   const handleOpenDialog = () => setOpen(!open);
 
-  const inputRefs = useRef([]);
-  const [uploadedImage, setUploadedImage] = useState(null);
-
-  const handleInputChange = (e, index) => {
-    const { value } = e.target;
-    if (value.length >= 1 && index < inputRefs.current.length - 1) {
-      inputRefs.current[index + 1].focus();
-    }
-  };
-
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && index > 0 && !e.target.value) {
-      inputRefs.current[index - 1].focus();
-    }
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
   const [open1, setOpen1] = useState(false);
 
   const openDrawer = () => setOpen1(true);
@@ -133,28 +120,86 @@ const Booking = () => {
   const handleViewClick = (booking) => {
     setSelectedBooking(booking);
     handleOpenDialog();
-
-    const [otp, setOtp] = useState(["", "", "", ""]);
-
-    const handleChangeOtp = (element, index) => {
-      if (isNaN(element.value)) return false;
-
-      let newOtp = [...otp];
-      newOtp[index] = element.value;
-      setOtp(newOtp);
-
-      // Move to the next input box if the current one is filled
-      if (element.nextSibling && element.value) {
-        element.nextSibling.focus();
-      }
-    };
-
-    const handleVerifyOtp = () => {
-      const otpValue = otp.join("");
-      console.log("OTP entered: ", otpValue);
-      // Add your OTP verification logic here
-    };
   };
+
+  useEffect(() => {
+    console.log(selectedBooking);
+  }, [selectedBooking]);
+
+  const [otp, setOtp] = useState(["", "", "", ""]);
+
+  const handleChangeOtp = (element, index) => {
+    if (isNaN(element.value)) return false;
+
+    let newOtp = [...otp];
+    newOtp[index] = element.value;
+    setOtp(newOtp);
+
+    // Move to the next input box if the current one is filled
+    if (element.nextSibling && element.value) {
+      element.nextSibling.focus();
+    }
+  };
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpVerifyingError, setOtpVerifyingError] = useState("");
+  const handleVerifyOtp = async () => {
+    const otpValue = otp.join("");
+    if (otpValue != selectedBooking.otp) {
+      setOtpVerifyingError("Invalid otp");
+      return;
+    }
+    setOtpVerified(true);
+    setOtp(["", "", "", ""]);
+    const postData = { ...selectedBooking, otpVerified: true };
+    const res = await axios.put(
+      `/api/bookings/${selectedBooking._id}`,
+      postData
+    );
+    console.log(res);
+  };
+
+  const [uploadedImage, setUploadedImage] = useState("");
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      return;
+    }
+
+    if (selectedBooking?.verificationImage?.url) {
+      await deleteObject(ref(storage, selectedBooking?.verificationImage?.url));
+    }
+    const imageRef = ref(
+      storage,
+      `service-provider-verification-image/${
+        file.lastModified + file.size + file.name
+      }`
+    );
+    await uploadBytes(imageRef, file);
+    const imageUrl = await getDownloadURL(imageRef); // Get the image URL directly
+    setUploadedImage(imageUrl);
+    const imageObject = { url: imageUrl, name: imageRef._location.path_ };
+    const postData = {
+      ...selectedBooking,
+      verificationImage: imageObject,
+    };
+    const res = await axios.put(
+      `/api/bookings/${selectedBooking._id}`,
+      postData
+    );
+    console.log(res);
+  };
+  useEffect(() => {
+    if (selectedBooking?.otpVerified === true) {
+      setOtpVerified(true);
+    }
+    if (selectedBooking?.otpVerified !== true) {
+      setOtpVerified(false);
+    }
+    if (selectedBooking?.verificationImage?.url) {
+      setUploadedImage(selectedBooking?.verificationImage?.url);
+    }
+    setOtpVerifyingError("");
+  }, [selectedBooking]);
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
@@ -202,15 +247,14 @@ const Booking = () => {
                 height={96}
               />
             </div>
-              <div className="">
+            <div className="">
               <Typography variant="h5" color="blue" className="font-semibold">
-              Kundan Kumar
-          </Typography>
+                Kundan Kumar
+              </Typography>
               <div className="text-gray-800 flex items-center gap-2 mx-auto  font-bold">
                 <Rating value={4} readonly /> 4.5
               </div>
-              </div>
-            
+            </div>
           </div>
         </div>
         <div
@@ -236,150 +280,205 @@ const Booking = () => {
         </div>
       </Drawer>
       {user?.role === "user" ? (
-        <div className=" container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
-          <header className="mb-8 flex flex-col sm:flex-row items-center justify-center mx-auto gap-2">
-            <h1 className="font-julius text-center lg:text-4xl md:text-4xl sm:text-3xl text-3xl text-gray-700 font-bold">
-              Booking Details
-            </h1>
-          </header>
+        <div>
+          {serviceProviderBookings.map((booking) => {
+            return (
+              <div className=" container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
+                <header className="mb-8 flex flex-col sm:flex-row items-center justify-center mx-auto gap-2">
+                  <h1 className="font-julius text-center lg:text-4xl md:text-4xl sm:text-3xl text-3xl text-gray-700 font-bold">
+                    Booking Details
+                  </h1>
+                </header>
 
-          <section className="mb-8">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/image/hero5.webp"
-                className="rounded-md"
-                alt="Booking"
-                width={96} // Adjust the width and height as needed
-                height={96}
-              />
-              <h3 className="font-julius lg:text-3xl md:text-2xl sm:text-2xl text-3xl text-gray-700 font-bold">
-                AC Installer
-              </h3>
-            </div>
-            <div className="flex flex-col sm:flex-row justify-between mt-2">
-              <div className="mb-4 sm:mb-0 leading-9">
-                <div>
-                  Full Name:{" "}
-                  <strong className="text-gray-600">Atul Kumar</strong>
-                </div>
-                <div>
-                  Phone:{" "}
-                  <strong className="text-gray-600">+91 9508973152</strong>
-                </div>
-                <div>
-                  Address:{" "}
-                  <strong className="text-gray-600">
-                    Bashist colony anishabad patna-800002
-                  </strong>
-                </div>
-                <div>
-                  Booking #: <strong className="text-gray-600">0000011</strong>
-                </div>
-                <div>
-                  Booking Date:{" "}
-                  <strong className="text-gray-600">02-29-2024</strong>
-                </div>
-                <div className="text-gray-800 font-bold flex items-center gap-2">
-                  Status:{" "}
-                  <span className="text-teal-500 rounded-md">Confirmed</span>
-                  <div
-                    onClick={openDrawer}
-                    className="flex gap-2 cursor-pointer underline items-center "
-                  >
-                    View Detail <FaEye fontSize={20} />
-                  </div>
-                </div>
-              </div>
-              <div className="leading-9">
-                <div>
-                  Available Date:{" "}
-                  <strong className="text-gray-600">
-                    Sunday 11. August, 2024
-                  </strong>
-                </div>
-                <div>
-                  Timing: <strong className="text-gray-600">10:00 AM</strong>
-                </div>
-                <div>
-                  Quantity: <strong className="text-gray-600">1</strong>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="text-gray-800 font-bold flex items-center gap-2">
-                    Verification OTP:{" "}
-                    <span className="text-teal-500">1234</span>
-                  </div>
-                  <Tooltip
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    placement="top"
-                    content={
-                      <div>
-                        <Typography color="white" variant="small">
-                          Verfication code is used to verify the service
-                          provider
-                        </Typography>
-                      </div>
+                <section className="mb-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    {
+                      booking.cartItems.map(item => {
+                        return (
+                          <div className="flex items-center gap-3">
+                            {/* <Image
+                              src={item.image}
+                              className="rounded-md"
+                              alt="Booking"
+                              width={96} // Adjust the width and height as needed
+                              height={96}
+                            /> */}
+                            <h3 className="font-julius lg:text-3xl md:text-2xl sm:text-2xl text-3xl text-gray-700 font-bold">
+                              {item.name}
+                            </h3>
+                          </div>
+                        )
+                      })
                     }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      className="h-5 w-5 cursor-pointer text-blue-gray-500"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                      />
-                    </svg>
-                  </Tooltip>
-                </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row justify-between mt-2">
+                    <div className="mb-4 sm:mb-0 leading-9">
+                      <div>
+                        Full Name:{" "}
+                        <strong className="text-gray-600">{booking.fullname}</strong>
+                      </div>
+                      <div>
+                        Phone:{" "}
+                        <strong className="text-gray-600">
+                          +91 {booking.phoneNumber}
+                        </strong>
+                      </div>
+                      <div>
+                        Address:{" "}
+                        <strong className="text-gray-600">
+                          Bashist colony anishabad patna-800002
+                        </strong>
+                      </div>
+                      <div>
+                        Booking #:{" "}
+                        <strong className="text-gray-600">0000011</strong>
+                      </div>
+                      <div>
+                        Booking Date:{" "}
+                        <strong className="text-gray-600">02-29-2024</strong>
+                      </div>
+                      <div className="text-gray-800 font-bold flex items-center gap-2">
+                        Status:{" "}
+                        <span className="text-teal-500 rounded-md">
+                          Confirmed
+                        </span>
+                        <div
+                          onClick={openDrawer}
+                          className="flex gap-2 cursor-pointer underline items-center "
+                        >
+                          View Detail <FaEye fontSize={20} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="leading-9">
+                      <div>
+                        Available Date:{" "}
+                        <strong className="text-gray-600">
+                          Sunday 11. August, 2024
+                        </strong>
+                      </div>
+                      <div>
+                        Timing:{" "}
+                        <strong className="text-gray-600">10:00 AM</strong>
+                      </div>
+                      <div>
+                        Quantity: <strong className="text-gray-600">1</strong>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-gray-800 font-bold flex items-center gap-2">
+                          Verification OTP:{" "}
+                          <span className="text-teal-500">1234</span>
+                        </div>
+                        <Tooltip
+                          animate={{
+                            mount: { scale: 1, y: 0 },
+                            unmount: { scale: 0, y: 25 },
+                          }}
+                          placement="top"
+                          content={
+                            <div>
+                              <Typography color="white" variant="small">
+                                Verfication code is used to verify the service
+                                provider
+                              </Typography>
+                            </div>
+                          }
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            className="h-5 w-5 cursor-pointer text-blue-gray-500"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            />
+                          </svg>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="mb-8">
+                  <table className="min-w-full  ">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4   text-left font-julius lg:text-2xl md:text-xl sm:text-xl text-xl text-gray-700 font-bold">
+                          Summary
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="py-2 px-4 border-b">Subtotal</td>
+                        <td className="py-2 px-4 border-b text-right">
+                          ₹600.00
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-4 border-b">Convenience Fee</td>
+                        <td className="py-2 px-4 border-b text-right">
+                          ₹18.00
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2 px-4 font-bold">Total</td>
+                        <td className="py-2 px-4 text-right font-bold">
+                          ₹618.00
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+
+                <section className="mb-8">
+                  <p className="font-medium text-red-600">
+                    Note: Order can be cancelled up to 10 minutes before the
+                    scheduled time.
+                  </p>
+                  <div className="flex justify-end">
+                    <button className="mt-4 bg-red-600 text-white py-2 px-4 rounded">
+                      Cancel Order
+                    </button>
+                  </div>
+                </section>
               </div>
-            </div>
-          </section>
-
-          <section className="mb-8">
-            <table className="min-w-full  ">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4   text-left font-julius lg:text-2xl md:text-xl sm:text-xl text-xl text-gray-700 font-bold">
-                    Summary
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="py-2 px-4 border-b">Subtotal</td>
-                  <td className="py-2 px-4 border-b text-right">₹600.00</td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 border-b">Convenience Fee</td>
-                  <td className="py-2 px-4 border-b text-right">₹18.00</td>
-                </tr>
-                <tr>
-                  <td className="py-2 px-4 font-bold">Total</td>
-                  <td className="py-2 px-4 text-right font-bold">₹618.00</td>
-                </tr>
-              </tbody>
-            </table>
-          </section>
-
-          <section className="mb-8">
-            <p className="font-medium text-red-600">
-              Note: Order can be cancelled up to 10 minutes before the scheduled
-              time.
+            );
+          })}
+        </div>
+      ) : serviceProviderBookings.length <= 0 ? (
+        <div className="flex flex-col items-center p-6 rounded-lg shadow-md">
+          <div className="text-2xl font-semibold text-gray-700 mb-2 flex items-center gap-2 ">
+            🫠 Uh oh
+          </div>
+          <div className="mb-4">You have no service request yet!</div>
+          <ul className="bg-white p-4 rounded-lg shadow-sm w-full max-w-lg">
+            <p className="text-lg font-semibold text-indigo-500 mb-2">
+              📈 Tips to get more bookings:
             </p>
-            <div className="flex justify-end">
-              <button className="mt-4 bg-red-600 text-white py-2 px-4 rounded">
-                Cancel Order
-              </button>
-            </div>
-          </section>
+            <li className="text-gray-600 mb-2 flex items-center gap-2">
+              <FaAngleDoubleRight className="text-indigo-500" />
+              Try adding as many services as you can.
+            </li>
+            <li className="text-gray-600 mb-2 flex items-center gap-2">
+              <FaAngleDoubleRight className="text-indigo-500" />
+              Try a wide range of locations where you're available.
+            </li>
+            <li className="text-gray-600 flex items-center gap-2">
+              <FaAngleDoubleRight className="text-indigo-500" />
+              Your location is only valid within a 15km radius.
+            </li>
+            <Link href={`/service-provider/${user._id}`}>
+              <Button variant="gradient" color="blue" className="mt-6 rounded">
+                Go to profile
+              </Button>
+            </Link>
+          </ul>
         </div>
       ) : (
         <div className="container mx-auto py-8">
@@ -456,9 +555,9 @@ const Booking = () => {
           mount: { scale: 1, y: 0 },
           unmount: { scale: 0.1, y: 500 },
         }}
-        className="bg-white p-6 "
+        className="bg-gray-100 p-6 "
       >
-        <DialogHeader className="flex justify-between items-center p-0 mb-2">
+        <DialogHeader className="flex justify-between items-center p-0 mb-2 px-4">
           <div className="font-julius text-2xl font-bold ">Booking Details</div>
           <IconButton variant="text" onClick={handleOpenDialog}>
             <RxCross1 size={20} />
@@ -466,7 +565,7 @@ const Booking = () => {
         </DialogHeader>
         <div className="max-h-[32rem] overflow-auto px-4">
           <section className="mb-8">
-            <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mb-4">
               {selectedBooking?.cartItems?.map((item) => {
                 return (
                   <div className="flex items-center gap-3" key={item._id}>
@@ -476,7 +575,7 @@ const Booking = () => {
                       alt="Booking"
                     />
                     <div className="flex flex-col gap-1">
-                      <h3 className="font-lato lg:text-3xl md:text-2xl sm:text-2xl text-xl text-gray-700 ">
+                      <h3 className="md:text-2xl sm:text-2xl text-xl text-gray-700 ">
                         {item.name}
                       </h3>
                       <p>
@@ -497,11 +596,11 @@ const Booking = () => {
               })}
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between mt-2">
-              <div className="mb-4 mt-2 sm:mb-0 leading-9">
-                <h3 className="font-bold text-gray-700 text-xl">
-                  Customer Information
-                </h3>
+            <h3 className="text-gray-700 text-2xl whitespace-nowrap">
+              Customer Information
+            </h3>
+            <div className=" flex flex-col gap-4 sm:flex-row justify-between mt-2">
+              <div className="w-1/2 flex flex-col gap-1">
                 <p>
                   Full Name:{" "}
                   <strong className="text-gray-600">
@@ -528,17 +627,11 @@ const Booking = () => {
                   </strong>
                 </p>
               </div>
-              <div className="leading-9 lg:mt-8 md:mt-8 sm:mt-8 mt-0">
-                <p>
-                  Booking Id:{" "}
-                  <strong className="text-gray-600">
-                    {selectedBooking?._id}
-                  </strong>
-                </p>
+              <div className="w-1/2 flex flex-col gap-1">
                 <p>
                   Day of departure:{" "}
                   <strong className="text-gray-600">
-                    Sunday 11. August, 2024
+                    {selectedBooking?.date}
                   </strong>
                 </p>
                 <p>
@@ -567,7 +660,7 @@ const Booking = () => {
               <Marker position={selectedBooking?.location} />
             </GoogleMap>
           </LoadScriptNext>
-          <section className="mb-8">
+          <section className="mb-8 mt-4">
             <table className="min-w-full">
               <thead>
                 <tr>
@@ -576,7 +669,7 @@ const Booking = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-gray-700">
                 <tr>
                   <td className="py-2 px-4 border-b">Subtotal</td>
                   <td className="py-2 px-4 border-b text-right">
@@ -629,54 +722,80 @@ const Booking = () => {
               </tbody>
             </table>
           </section>
-          <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md lg:w-full md:w-10/12 sm:w-10/12 w-full">
-              <h2 className="py-2 px-4 text-center font-julius lg:text-2xl md:text-xl sm:text-xl text-lg text-gray-700 font-bold">
-                Enter reached verification Code
-              </h2>
-              <div className="flex items-center gap-4 mt-4">
-                {otp.map((data, index) => {
-                  return (
-                    <input
-                      key={index}
-                      type="text"
-                      name="otp"
-                      maxLength="1"
-                      className="w-12 h-12 text-center text-lg border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
-                      value={data}
-                      onChange={(e) => handleChangeOtp(e.target, index)}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  );
-                })}
-                <button
-                  onClick={handleVerifyOtp}
-                  className="bg-teal-500 text-white py-2 px-4 rounded hover:bg-teal-600"
-                >
-                  Confirm
-                </button>
+          <div className="flex flex-col justify-center items-center lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+            {otpVerified ? (
+              <div className="bg-white rounded-lg shadow-md lg:w-2/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4 flex items-center flex-col justify-center">
+                <div className="text-2xl font-julius text-teal-500 font-bold flex flex-col items-center gap-1">
+                  <RiVerifiedBadgeFill size={75} /> OTP Verified
+                </div>
               </div>
-            </div>
-            <div className="bg-gray-50 p-6 rounded-lg shadow-md lg:w-full md:w-10/12 sm:w-10/12 w-full">
-              <div>
-                <h2 className="py-2 px-4 text-center font-julius lg:text-2xl md:text-xl sm:text-xl text-lg text-gray-700 font-bold">
-                  Upload verification image
+            ) : (
+              <div className="bg-white rounded-lg shadow-md lg:w-2/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4 flex items-center flex-col justify-center">
+                <h2 className="font-julius md:text-xl sm:text-xl text-lg text-gray-500 font-bold">
+                  Enter reached verification OTP
                 </h2>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="block mx-auto mb-4"
-                />
-                {uploadedImage && (
-                  <div className="flex justify-center">
-                    <img
-                      src={uploadedImage}
-                      alt="Uploaded"
-                      className="w-32 h-32 rounded-lg"
-                    />
+
+                <div className="w-full px-6 flex items-center flex-col md:flex-row justify-center gap-4 mt-4">
+                  <div className="flex items-center justify-center gap-4">
+                    {otp.map((data, index) => {
+                      return (
+                        <input
+                          key={index}
+                          type="text"
+                          name="otp"
+                          maxLength="1"
+                          className="w-12 h-12 text-center text-lg border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
+                          value={data}
+                          onChange={(e) => handleChangeOtp(e.target, index)}
+                          onFocus={(e) => e.target.select()}
+                        />
+                      );
+                    })}
+                  </div>
+                  <button
+                    variant="gradient"
+                    color="teal"
+                    className="rounded px-4 py-2 flex items-center gap-1 bg-blue-500 text-white hover:shadow-lg hover:shadow-blue-100 transition-all font-semibold"
+                    onClick={handleVerifyOtp}
+                  >
+                    Verify <FaCheckCircle />
+                  </button>
+                </div>
+                {otpVerifyingError && (
+                  <div className="text-red-500 text-xs">
+                    {otpVerifyingError}
                   </div>
                 )}
+              </div>
+            )}
+
+            <div className="bg-white flex justify-center items-center rounded-lg shadow-md lg:w-3/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4">
+              <div className="flex gap-4 flex-col md:flex-row items-center justify-center">
+                <div className="flex justify-center">
+                  <img
+                    src={uploadedImage || "https://placehold.co/400"}
+                    alt="Uploaded"
+                    className="w-32 h-32 rounded-lg object-cover"
+                  />
+                </div>
+                <div className="flex flex-col items-center md:items-start justify-center gap-2">
+                  <h2 className="font-julius md:text-xl sm:text-xl text-md text-gray-500 font-bold">
+                    Upload verification image
+                  </h2>
+                  <label
+                    htmlFor="verification-image"
+                    className="flex items-center gap-1 w-fit cursor-pointer text-sm bg-blue-500 text-white px-4 py-2 rounded uppercase font-semibold hover:shadow-lg hover:shadow-blue-100 transition-all"
+                  >
+                    Upload Image <MdOutlineCloudUpload />
+                  </label>
+                  <input
+                    id="verification-image"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -690,14 +809,24 @@ const Booking = () => {
               <li>Attach an image of doing servicing</li>
             </ol>
           </section>
-          <div className="mt-4 flex justify-end">
-            <div className="flex gap-2 ">
-              <button className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+          <div className="my-4 flex justify-end">
+            <div className="flex gap-2 w-full md:w-fit">
+              <Button
+                variant="outlined"
+                color="blue"
+                ripple
+                className="w-full md:w-fit rounded"
+              >
                 Reject
-              </button>
-              <button className="px-4 py-2  bg-teal-500 text-white rounded-md text-sm font-medium hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
+              </Button>
+              <Button
+                variant="gradient"
+                color="blue"
+                ripple
+                className="w-full md:w-fit rounded"
+              >
                 Accept
-              </button>
+              </Button>
             </div>
           </div>
         </div>
