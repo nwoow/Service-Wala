@@ -16,6 +16,7 @@ const Admin = () => {
     totalServiceProviders: 0,
     activeServiceproviders: 0,
   });
+
   const getDashboardData = async () => {
     const response = await fetch("/api/admin/dashboard", {
       method: "GET",
@@ -26,7 +27,8 @@ const Admin = () => {
     const data = await response.json();
     setData(data);
   };
-  const chechingAuthorization = async () => {
+
+  const checkingAuthorization = async () => {
     const id = localStorage.getItem("token");
     if (!id) {
       window.location.href = "/";
@@ -43,15 +45,18 @@ const Admin = () => {
       window.location.href = "/";
     }
   };
+
   const [loading, setLoading] = useState(true);
-  const loadingFunction = async () => {
-    await chechingAuthorization();
-    await getDashboardData();
-    setLoading(false);
-  };
+
   useEffect(() => {
+    const loadingFunction = async () => {
+      await checkingAuthorization();
+      await getDashboardData();
+      setLoading(false);
+    };
+
     loadingFunction();
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once
 
   return (
     <>

@@ -52,27 +52,28 @@ const TABLE_ROWS = [
     date: "04/10/21",
   },
 ];
-const chechingAuthorization = async () => {
-  const id = localStorage.getItem("token");
-  if (!id) {
-    window.location.href = "/";
-    return;
-  }
-  const response = await fetch(`/api/users/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  if (data.role !== "user") {
-    window.location.href = "/";
-  }
-};
-useEffect(() => {
-  chechingAuthorization();
-}, []);
+
 const History = () => {
+  const chechingAuthorization = async () => {
+    const id = localStorage.getItem("token");
+    if (!id) {
+      window.location.href = "/";
+      return;
+    }
+    const response = await fetch(`/api/users/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    if (data.role !== "user") {
+      window.location.href = "/";
+    }
+  };
+  useEffect(() => {
+    chechingAuthorization();
+  }, []);
   return (
     <div className="userpage-bg min-h-screen">
       <Nav />

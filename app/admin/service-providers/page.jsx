@@ -20,6 +20,7 @@ import { AiOutlineUserDelete } from "react-icons/ai";
 import { deleteObject, ref } from "firebase/storage";
 import { storage } from "@/firebase";
 import Fuse from "fuse.js";
+import Image from "next/image";
 
 const ServiceProviders = () => {
   const [openDialogId, setOpenDialogId] = useState(null);
@@ -166,12 +167,12 @@ const ServiceProviders = () => {
     }
   };
   const [loading, setLoading] = useState(true);
-  const loadingFunction = async () => {
-    await chechingAuthorization();
-    await gettingUsers();
-    setLoading(false);
-  };
   useEffect(() => {
+    const loadingFunction = async () => {
+      await chechingAuthorization();
+      await gettingUsers();
+      setLoading(false);
+    };
     loadingFunction();
   }, []);
   return (
@@ -223,10 +224,12 @@ const ServiceProviders = () => {
               >
                 <div className="flex gap-2 items-center">
                   {user?.image?.url ? (
-                    <img
+                    <Image
                       src={user.image.url}
                       alt={user.name}
                       className="w-16 h-16 object-cover rounded-full"
+                      width={40}
+                      height={40}
                     />
                   ) : (
                     <div className="w-16 h-16 text-2xl rounded-full flex justify-center text-black font-junge items-center bg-gray-400 cursor-pointer">
@@ -287,10 +290,12 @@ const ServiceProviders = () => {
                           {/* Dialog content */}
                           <div className="flex gap-4">
                             {user?.image?.url ? (
-                              <img
+                              <Image
                                 src={user.image.url}
                                 alt={user.name}
                                 className="w-32 h-full rounded-md object-cover drop-shadow-lg"
+                                width={60}
+                                height={60}
                               />
                             ) : (
                               <div className="w-32 h-32 text-6xl text-black rounded-full flex justify-center items-center font-junge bg-gray-400 cursor-pointer">

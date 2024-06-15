@@ -16,7 +16,7 @@ const About = () => {
             <h1 className="font-cookie text-blue-500 text-4xl sm:text-5xl md:text-6xl lg:text-6xl">
               About Us
             </h1>
-            <h2 className="font-julius  text-gray-700 text-3xl sm:text-3xl md:text-4xl lg:text-3xl mb-4">
+            <h2 className="font-julius text-gray-700 text-3xl sm:text-3xl md:text-4xl lg:text-3xl mb-4">
               Your Trusted Home Service Partner
             </h2>
             <p className="mb-4 text-gray-700">
@@ -73,10 +73,12 @@ const About = () => {
           How to book a service
           <WiStars color="orange" />
         </h1>
-        <img
+        <Image
           className="w-64 sm:w-80 md:w-96 lg:w-96"
           src="/image/line2.svg"
           alt=""
+          width={384}
+          height={96}
         />
       </div>
       <div className="px-4 lg:px-20  w-full">
@@ -90,18 +92,22 @@ const About = () => {
               Why choose us?
               <WiStars color="orange" />
             </h1>
-            <img
+            <Image
               className="w-64 sm:w-80 md:w-96 lg:w-96"
               src="/image/line2.svg"
               alt=""
+              width={384}
+              height={96}
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-center mb-4">
-                <img
+                <Image
                   src="/image/line2.svg"
                   alt="Fast & Free Shipping"
+                  width={48}
+                  height={48}
                   className="h-12 w-12"
                 />
               </div>
@@ -115,9 +121,11 @@ const About = () => {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-center mb-4">
-                <img
+                <Image
                   src="/image/line2.svg"
                   alt="Warranty Protection"
+                  width={48}
+                  height={48}
                   className="h-12 w-12"
                 />
               </div>
@@ -131,9 +139,11 @@ const About = () => {
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md">
               <div className="flex justify-center mb-4">
-                <img
+                <Image
                   src="/image/line2.svg"
                   alt="Premium Materials"
+                  width={48}
+                  height={48}
                   className="h-12 w-12"
                 />
               </div>

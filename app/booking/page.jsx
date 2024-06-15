@@ -201,6 +201,8 @@ const Booking = () => {
     setOtpVerifyingError("");
   }, [selectedBooking]);
 
+  
+
   return (
     <div className="min-h-screen flex flex-col justify-between">
       <div className="w-full">
@@ -283,7 +285,7 @@ const Booking = () => {
         <div>
           {serviceProviderBookings.map((booking) => {
             return (
-              <div className=" container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
+              <div key={booking._id} className="container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
                 <header className="mb-8 flex flex-col sm:flex-row items-center justify-center mx-auto gap-2">
                   <h1 className="font-julius text-center lg:text-4xl md:text-4xl sm:text-3xl text-3xl text-gray-700 font-bold">
                     Booking Details
@@ -292,30 +294,30 @@ const Booking = () => {
 
                 <section className="mb-8">
                   <div className="grid grid-cols-2 gap-4">
-                    {
-                      booking.cartItems.map(item => {
-                        return (
-                          <div className="flex items-center gap-3">
-                            {/* <Image
+                    {booking.cartItems.map((item, i) => {
+                      return (
+                        <div className="flex items-center gap-3" key={i}>
+                          {/* <Image
                               src={item.image}
                               className="rounded-md"
                               alt="Booking"
                               width={96} // Adjust the width and height as needed
                               height={96}
                             /> */}
-                            <h3 className="font-julius lg:text-3xl md:text-2xl sm:text-2xl text-3xl text-gray-700 font-bold">
-                              {item.name}
-                            </h3>
-                          </div>
-                        )
-                      })
-                    }
+                          <h3 className="font-julius lg:text-3xl md:text-2xl sm:text-2xl text-3xl text-gray-700 font-bold">
+                            {item.name}
+                          </h3>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="flex flex-col sm:flex-row justify-between mt-2">
                     <div className="mb-4 sm:mb-0 leading-9">
                       <div>
                         Full Name:{" "}
-                        <strong className="text-gray-600">{booking.fullname}</strong>
+                        <strong className="text-gray-600">
+                          {booking.fullname}
+                        </strong>
                       </div>
                       <div>
                         Phone:{" "}
@@ -467,7 +469,7 @@ const Booking = () => {
             </li>
             <li className="text-gray-600 mb-2 flex items-center gap-2">
               <FaAngleDoubleRight className="text-indigo-500" />
-              Try a wide range of locations where you're available.
+              Try a wide range of locations where you are available.
             </li>
             <li className="text-gray-600 flex items-center gap-2">
               <FaAngleDoubleRight className="text-indigo-500" />
