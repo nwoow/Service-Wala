@@ -42,7 +42,7 @@ const userSchema = new Schema(
       type: String,
     },
     serviceHistory: {
-      type: [Schema.Types.ObjectId], // Assuming these are references to other documents
+      type: [], // Assuming these are references to other documents
       default: [],
     },
     password: {
@@ -58,19 +58,19 @@ const userSchema = new Schema(
       default: [],
     },
     reviews: {
-      type: [Schema.Types.ObjectId], // Assuming these are references to other documents
+      type: [], // Assuming these are references to other documents
       default: [],
     },
     bookings: {
-      type: [Schema.Types.ObjectId], // Assuming these are references to other documents
+      type: [], // Assuming these are references to other documents
       default: [],
     },
     payments: {
-      type: [Schema.Types.ObjectId], // Assuming these are references to other documents
+      type: [], // Assuming these are references to other documents
       default: [],
     },
     messages: {
-      type: [Schema.Types.ObjectId], // Assuming these are references to other documents
+      type: [], // Assuming these are references to other documents
     },
   },
   {

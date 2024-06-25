@@ -277,18 +277,38 @@ function Shipping() {
       paymentMethod: "POD",
       location,
       cartItems,
-      status: false,
+      availableServiceProviders: availableServiceProviders,
+      status: "Request sended to service provider",
       otp,
     };
-
+    console.log({ availableServiceProviders });
     try {
+      // Add new booking
       const response = await axios.post("/api/bookings/add", postData);
       const updatedUser = {
         ...user,
         bookings: [...user.bookings, response.data._id],
       };
+
+      // Request service provider of the new booking
+
+      const firstServiceProvider = availableServiceProviders[0];
+      const requestingToServiceProvider = await axios.post(
+        "/api/users/update",
+        {
+          ...firstServiceProvider,
+          bookings: [...firstServiceProvider.bookings, response.data._id],
+        }
+      );
+      console.log({
+        requestingToServiceProvider: requestingToServiceProvider.data,
+      });
+      // Update user bookings
+
       await axios.post("/api/users/update", updatedUser);
       gettingUser();
+
+      // To update the booking of the service!
       await axios.post(`/api/services/update-bookings`, {
         cartItems,
         orderId: response.data._id,
@@ -456,7 +476,7 @@ function Shipping() {
               className="w-full bg-gray-700 transition-all hover:bg-gray-800 text-white p-2 rounded mt-4"
               type="submit"
             >
-              Continue to payements
+              Continue to payments
             </button>
             <Dialog
               size="md"

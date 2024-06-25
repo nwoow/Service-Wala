@@ -5,7 +5,7 @@ import { Button, ButtonGroup } from "@material-tailwind/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { VscDebugContinue } from "react-icons/vsc";
@@ -13,12 +13,26 @@ import { VscDebugContinue } from "react-icons/vsc";
 const Cart = () => {
   const router = useRouter();
   const [products, setProducts] = useState([]);
+  const [user, setUser] = useState({});
+  const gettingUser = useCallback(async () => {
+    try {
+      const id = localStorage.getItem("token");
+      const response = await fetch(`/api/service-providers/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      setUser(data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("cart"));
     if (cart) {
       setProducts(cart);
     }
-    console.log(cart);
+    gettingUser();
   }, []);
   const [validationMessage, setValidationMessage] = useState("");
 
@@ -57,6 +71,10 @@ const Cart = () => {
       return updatedProducts;
     });
   };
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <div>
@@ -187,7 +205,21 @@ const Cart = () => {
                 disabled
                 className="w-full py-3 mt-3 flex items-center gap-1 justify-center bg-gray-500 text-white rounded-lg cursor-not-allowed"
               >
-                Continue <VscDebugContinue />
+                Add minimum 1 item to continue <VscDebugContinue />
+              </button>
+            ) : Object.keys(user).length === 0 ? (
+              <button
+                disabled
+                className="w-full py-3 mt-3 flex items-center gap-1 justify-center bg-gray-500 text-white rounded-lg cursor-not-allowed"
+              >
+                Login first to continue <VscDebugContinue />
+              </button>
+            ) : user.role !== "user" ? (
+              <button
+                disabled
+                className="w-full py-3 mt-3 flex items-center gap-1 justify-center bg-gray-500 text-white rounded-lg cursor-not-allowed"
+              >
+                Only user can book a service <VscDebugContinue />
               </button>
             ) : (
               <Link
@@ -197,6 +229,7 @@ const Cart = () => {
                 Continue <VscDebugContinue />
               </Link>
             )}
+
             <div className="text-sm text-gray-500">
               <p className="text-base">About Service Providers</p>
               <p>

@@ -28,9 +28,15 @@ const bookingSchema = new Schema(
     },
     sendedToServiceProvider: {
       type: Boolean,
+      default: false,
+    },
+    acceptedByServiceProvider: {
+      type: Boolean,
+      default: false,
     },
     paymentCompleted: {
       type: Boolean,
+      default: false,
     },
     date: {
       type: String,
@@ -58,12 +64,12 @@ const bookingSchema = new Schema(
       default: [],
     },
     assignedServiceProviders: {
-      type: Array,
-      default: [],
+      type: Object,
     },
     location: {
       type: Object,
     },
+    noServiceProviderAvailable: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -201,7 +201,119 @@ const Booking = () => {
     setOtpVerifyingError("");
   }, [selectedBooking]);
 
-  
+  const handleRejectRequest = async (id) => {
+    const filteredBookings = user.bookings?.filter((bookingId) => {
+      bookingId !== id;
+    });
+    const updateServiceProviderData = {
+      ...user,
+      bookings: filteredBookings,
+    };
+    setUser(updateServiceProviderData);
+
+    //Update Booking data
+
+    const filteredAvailableServiceProviders =
+      selectedBooking.availableServiceProviders.filter((sp) => {
+        return sp._id !== user._id;
+      });
+
+    const bookingData = {
+      ...selectedBooking,
+      availableServiceProviders: filteredAvailableServiceProviders,
+    };
+
+    //Get the index of current service provider
+
+    const currentIndexOfAvailableServiceProvider =
+      selectedBooking.availableServiceProviders?.findIndex(
+        (serviceProvider) => serviceProvider._id === user._id
+      );
+
+    // Get the next service provider
+    const nextServiceProvider =
+      selectedBooking.availableServiceProviders[
+        currentIndexOfAvailableServiceProvider + 1
+      ];
+
+    // If No service Provider is available
+
+    if (!nextServiceProvider) {
+      const updateNoServiceProviderAvailableData = {
+        ...selectedBooking,
+        noServiceProviderAvailable: true,
+      };
+      try {
+        await axios.put(
+          `/api/bookings/${id}`,
+          updateNoServiceProviderAvailableData
+        );
+        //Update Booking data
+        const updateBookingResponse = await axios.put(
+          `/api/bookings/${id}`,
+          bookingData
+        );
+        console.log({ updateBookingResponse });
+        const existingServiceProviderResponse = await axios.post(
+          `/api/users/update`,
+          updateServiceProviderData
+        );
+        console.log({ existingServiceProviderResponse });
+        window.location.reload();
+        return;
+      } catch {
+        console.log(
+          "Something went wrong, Probably there is no service provider."
+        );
+      }
+    }
+    //Next service provider
+    const nextServiceProviderData = {
+      ...nextServiceProvider,
+      bookings: [...nextServiceProvider.bookings, selectedBooking._id],
+    };
+
+    try {
+      //Update current service provider
+      const existingServiceProviderResponse = await axios.post(
+        `/api/users/update`,
+        updateServiceProviderData
+      );
+      console.log({ existingServiceProviderResponse });
+      //Update next service provider
+      const nextServiceProviderResponse = await axios.post(
+        `/api/users/update`,
+        nextServiceProviderData
+      );
+      console.log({ nextServiceProviderResponse });
+      //Update Booking data
+      const updateBookingResponse = await axios.put(
+        `/api/bookings/${id}`,
+        bookingData
+      );
+      console.log({ updateBookingResponse });
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleAcceptRequest = async (id) => {
+    const postData = {
+      ...selectedBooking,
+      acceptedByServiceProvider: true,
+      assignedServiceProviders: user,
+    };
+    try {
+      const response = await axios.put(`/api/bookings/${id}`, postData);
+      console.log(response);
+      if (response.status === 201) {
+        setSelectedBooking(postData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col justify-between">
@@ -285,7 +397,10 @@ const Booking = () => {
         <div>
           {serviceProviderBookings.map((booking) => {
             return (
-              <div key={booking._id} className="container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6">
+              <div
+                key={booking._id}
+                className="container overflow-hidden bg-white bg-opacity-25 shadow-lg shadow-gray-400 backdrop-blur-sm backdrop-filter backdrop-opacity-1 rounded-lg border border-opacity-20 border-white mx-auto my-8 p-6"
+              >
                 <header className="mb-8 flex flex-col sm:flex-row items-center justify-center mx-auto gap-2">
                   <h1 className="font-julius text-center lg:text-4xl md:text-4xl sm:text-3xl text-3xl text-gray-700 font-bold">
                     Booking Details
@@ -328,21 +443,19 @@ const Booking = () => {
                       <div>
                         Address:{" "}
                         <strong className="text-gray-600">
-                          Bashist colony anishabad patna-800002
+                          {booking.address}
                         </strong>
                       </div>
                       <div>
-                        Booking #:{" "}
-                        <strong className="text-gray-600">0000011</strong>
-                      </div>
-                      <div>
                         Booking Date:{" "}
-                        <strong className="text-gray-600">02-29-2024</strong>
+                        <strong className="text-gray-600">
+                          {booking.date}
+                        </strong>
                       </div>
                       <div className="text-gray-800 font-bold flex items-center gap-2">
                         Status:{" "}
                         <span className="text-teal-500 rounded-md">
-                          Confirmed
+                          {booking.status}
                         </span>
                         <div
                           onClick={openDrawer}
@@ -488,7 +601,7 @@ const Booking = () => {
             {serviceProviderBookings.map((service, index) => (
               <div
                 key={index}
-                className="bg-white shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 flex flex-col justify-between"
+                className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col justify-between"
               >
                 <div className="p-4 flex gap-4 flex-col">
                   {service.cartItems.map((item, itemIndex) => (
@@ -526,22 +639,16 @@ const Booking = () => {
                     </div>
                   ))}
                 </div>
-                <div className="bg-gray-100 p-4 flex justify-between items-center">
-                  <div className="flex gap-4">
-                    <button className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-medium hover:bg-red-600 focus:outline-none">
-                      Reject
-                    </button>
-                    <button className="px-4 py-2 bg-teal-500 text-white rounded-md text-sm font-medium hover:bg-teal-600 focus:outline-none">
-                      Accept
-                    </button>
-                  </div>
-                  <button
-                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-400 focus:outline-none"
-                    onClick={() => handleViewClick(service)}
-                  >
-                    View
-                  </button>
-                </div>
+                <button
+                  className="px-4 py-2 bg-gray-200 text-gray-700 text-sm font-medium transition-all hover:bg-gray-300"
+                  onClick={() => handleViewClick(service)}
+                >
+                  View
+                </button>
+                {/* <div className="bg-gray-100 p-4 flex justify-end items-center">
+                 
+                  
+                </div> */}
               </div>
             ))}
           </div>
@@ -598,10 +705,10 @@ const Booking = () => {
               })}
             </div>
 
-            <h3 className="text-gray-700 text-2xl whitespace-nowrap">
+            <h3 className="text-blue-700 text-xl font-medium whitespace-nowrap">
               Customer Information
             </h3>
-            <div className=" flex flex-col gap-4 sm:flex-row justify-between mt-2">
+            <div className=" flex flex-col gap-4 sm:flex-row justify-between">
               <div className="w-1/2 flex flex-col gap-1">
                 <p>
                   Full Name:{" "}
@@ -642,11 +749,6 @@ const Booking = () => {
                     {selectedBooking?.time}
                   </strong>
                 </p>
-
-                {/* <p className="text-gray-800 font-bold flex items-center gap-2">
-                    Status:{" "}
-                    <span className="text-teal-500 rounded-md">Confirmed</span>
-                  </p> */}
               </div>
             </div>
           </section>
@@ -699,7 +801,7 @@ const Booking = () => {
                   <td className="py-2 px-4 border-b">Convenience Fee</td>
                   <td className="py-2 px-4 border-b text-right">₹18.00</td>
                 </tr>
-                <tr>
+                <tr className="text-gray-700 font-semibold">
                   <td className="py-2 px-4 border-b">Total</td>
                   <td className="py-2 px-4 border-b text-right">
                     ₹
@@ -724,83 +826,85 @@ const Booking = () => {
               </tbody>
             </table>
           </section>
-          <div className="flex flex-col justify-center items-center lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
-            {otpVerified ? (
-              <div className="bg-white rounded-lg shadow-md lg:w-2/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4 flex items-center flex-col justify-center">
-                <div className="text-2xl font-julius text-teal-500 font-bold flex flex-col items-center gap-1">
-                  <RiVerifiedBadgeFill size={75} /> OTP Verified
-                </div>
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow-md lg:w-2/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4 flex items-center flex-col justify-center">
-                <h2 className="font-julius md:text-xl sm:text-xl text-lg text-gray-500 font-bold">
-                  Enter reached verification OTP
-                </h2>
-
-                <div className="w-full px-6 flex items-center flex-col md:flex-row justify-center gap-4 mt-4">
-                  <div className="flex items-center justify-center gap-4">
-                    {otp.map((data, index) => {
-                      return (
-                        <input
-                          key={index}
-                          type="text"
-                          name="otp"
-                          maxLength="1"
-                          className="w-12 h-12 text-center text-lg border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
-                          value={data}
-                          onChange={(e) => handleChangeOtp(e.target, index)}
-                          onFocus={(e) => e.target.select()}
-                        />
-                      );
-                    })}
+          {selectedBooking?.acceptedByServiceProvider && (
+            <div className="flex flex-col justify-center items-center lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4">
+              {otpVerified ? (
+                <div className="bg-white rounded-lg shadow-md lg:w-2/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4 flex items-center flex-col justify-center">
+                  <div className="text-2xl font-julius text-teal-500 font-bold flex flex-col items-center gap-1">
+                    <RiVerifiedBadgeFill size={75} /> OTP Verified
                   </div>
-                  <button
-                    variant="gradient"
-                    color="teal"
-                    className="rounded px-4 py-2 flex items-center gap-1 bg-blue-500 text-white hover:shadow-lg hover:shadow-blue-100 transition-all font-semibold"
-                    onClick={handleVerifyOtp}
-                  >
-                    Verify <FaCheckCircle />
-                  </button>
                 </div>
-                {otpVerifyingError && (
-                  <div className="text-red-500 text-xs">
-                    {otpVerifyingError}
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="bg-white flex justify-center items-center rounded-lg shadow-md lg:w-3/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4">
-              <div className="flex gap-4 flex-col md:flex-row items-center justify-center">
-                <div className="flex justify-center">
-                  <img
-                    src={uploadedImage || "https://placehold.co/400"}
-                    alt="Uploaded"
-                    className="w-32 h-32 rounded-lg object-cover"
-                  />
-                </div>
-                <div className="flex flex-col items-center md:items-start justify-center gap-2">
-                  <h2 className="font-julius md:text-xl sm:text-xl text-md text-gray-500 font-bold">
-                    Upload verification image
+              ) : (
+                <div className="bg-white rounded-lg shadow-md lg:w-2/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4 flex items-center flex-col justify-center">
+                  <h2 className="font-julius md:text-xl sm:text-xl text-lg text-gray-500 font-bold">
+                    Enter reached verification OTP
                   </h2>
-                  <label
-                    htmlFor="verification-image"
-                    className="flex items-center gap-1 w-fit cursor-pointer text-sm bg-blue-500 text-white px-4 py-2 rounded uppercase font-semibold hover:shadow-lg hover:shadow-blue-100 transition-all"
-                  >
-                    Upload Image <MdOutlineCloudUpload />
-                  </label>
-                  <input
-                    id="verification-image"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                  />
+
+                  <div className="w-full px-6 flex items-center flex-col md:flex-row justify-center gap-4 mt-4">
+                    <div className="flex items-center justify-center gap-4">
+                      {otp.map((data, index) => {
+                        return (
+                          <input
+                            key={index}
+                            type="text"
+                            name="otp"
+                            maxLength="1"
+                            className="w-12 h-12 text-center text-lg border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-teal-400"
+                            value={data}
+                            onChange={(e) => handleChangeOtp(e.target, index)}
+                            onFocus={(e) => e.target.select()}
+                          />
+                        );
+                      })}
+                    </div>
+                    <button
+                      variant="gradient"
+                      color="teal"
+                      className="rounded px-4 py-2 flex items-center gap-1 bg-blue-500 text-white hover:shadow-lg hover:shadow-blue-100 transition-all font-semibold"
+                      onClick={handleVerifyOtp}
+                    >
+                      Verify <FaCheckCircle />
+                    </button>
+                  </div>
+                  {otpVerifyingError && (
+                    <div className="text-red-500 text-xs">
+                      {otpVerifyingError}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="bg-white flex justify-center items-center rounded-lg shadow-md lg:w-3/5 md:w-10/12 sm:w-10/12 w-full min-h-44 p-4">
+                <div className="flex gap-4 flex-col md:flex-row items-center justify-center">
+                  <div className="flex justify-center">
+                    <img
+                      src={uploadedImage || "https://placehold.co/400"}
+                      alt="Uploaded"
+                      className="w-32 h-32 rounded-lg object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col items-center md:items-start justify-center gap-2">
+                    <h2 className="font-julius md:text-xl sm:text-xl text-md text-gray-500 font-bold">
+                      Upload verification image
+                    </h2>
+                    <label
+                      htmlFor="verification-image"
+                      className="flex items-center gap-1 w-fit cursor-pointer text-sm bg-blue-500 text-white px-4 py-2 rounded uppercase font-semibold hover:shadow-lg hover:shadow-blue-100 transition-all"
+                    >
+                      Upload Image <MdOutlineCloudUpload />
+                    </label>
+                    <input
+                      id="verification-image"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           <section className="mb-8 mt-4">
             <h3 className="text-xl font-bold text-red-600">Caution:</h3>
@@ -811,26 +915,34 @@ const Booking = () => {
               <li>Attach an image of doing servicing</li>
             </ol>
           </section>
-          <div className="my-4 flex justify-end">
-            <div className="flex gap-2 w-full md:w-fit">
-              <Button
-                variant="outlined"
-                color="blue"
-                ripple
-                className="w-full md:w-fit rounded"
-              >
-                Reject
-              </Button>
-              <Button
-                variant="gradient"
-                color="blue"
-                ripple
-                className="w-full md:w-fit rounded"
-              >
-                Accept
-              </Button>
+          {!selectedBooking?.acceptedByServiceProvider && (
+            <div className="my-4 flex justify-end">
+              <div className="flex gap-2 w-full md:w-fit">
+                <Button
+                  variant="outlined"
+                  color="teal"
+                  ripple
+                  className="w-full md:w-fit md:px-10 rounded"
+                  onClick={() => {
+                    handleRejectRequest(selectedBooking?._id);
+                  }}
+                >
+                  Reject
+                </Button>
+                <Button
+                  variant="gradient"
+                  color="teal"
+                  ripple
+                  className="w-full md:w-fit md:px-10 rounded"
+                  onClick={() => {
+                    handleAcceptRequest(selectedBooking?._id);
+                  }}
+                >
+                  Accept
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </Dialog>
       <Footer />

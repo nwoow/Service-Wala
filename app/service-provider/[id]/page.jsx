@@ -638,7 +638,7 @@ const ServiceProvider = () => {
             </div>
           </div>
           <ServiceProviderLocation serviceProvider={user} />
-          <div className="container mx-auto px-4 py-8 ">
+          {/* <div className="container mx-auto px-4 py-8 ">
             <div className="flex items-center md:flex-row flex-col justify-between mb-4">
               <h2 className="text-2xl font-bold mb-4">Reviews by users</h2>
               <div className="flex items-center mb-4">
@@ -655,7 +655,7 @@ const ServiceProvider = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer />

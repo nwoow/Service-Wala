@@ -94,9 +94,12 @@ const ServiceProviderLocation = ({ serviceProvider }) => {
     >
       <div className="bg-white p-4 py-6 rounded shadow-md">
         <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0 text-center md:text-left w-full flex items-center">
-            <MdLocationOn color="red" size={25} /> Your available locations
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-700 mb-4 md:mb-0 text-center md:text-left w-full flex items-center">
+              <MdLocationOn color="red" size={25} /> Your available locations
+            </h2>
+            <p className="text-gray-500 text-sm">Your location is only valid within the radius of 15km</p>
+          </div>
           <div className="flex gap-2 flex-col md:flex-row w-full md:w-fit">
             <div className="w-full md:w-72">
               <StandaloneSearchBox
