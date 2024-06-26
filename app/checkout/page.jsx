@@ -278,7 +278,8 @@ function Shipping() {
       location,
       cartItems,
       availableServiceProviders: availableServiceProviders,
-      status: "Request sended to service provider",
+      status:
+        "Request sended to service provider, wait for them to be available for you.",
       otp,
     };
     console.log({ availableServiceProviders });
@@ -461,6 +462,8 @@ function Shipping() {
               type="time"
               name="time"
               value={formData.time}
+              min="08:00"
+              max="20:00"
               required
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded"

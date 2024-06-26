@@ -43,7 +43,7 @@ const AllServices = () => {
       </div>
       <div
         className={`${
-          loading ? "hidden" : "bloack"
+          loading ? "hidden" : "block"
         } transition-all duration-700`}
       >
         <Nav />

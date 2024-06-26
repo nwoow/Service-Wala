@@ -19,6 +19,7 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { CgUserlane } from "react-icons/cg";
 import {
   CardBody,
   Input,
@@ -634,7 +635,7 @@ export default function Nav() {
 
       if (response.status === 201) {
         setOpenForgotPassword(false);
-        setLoginData({...loginData, phoneNumber: forgetPasswordNumber})
+        setLoginData({ ...loginData, phoneNumber: forgetPasswordNumber });
         setForgotPasswordGeneratedOtp(0);
         setForgotPasswordOtpVerified(false);
         setOtpSended(false);
@@ -682,6 +683,11 @@ export default function Nav() {
               {user.role === "user" ? (
                 <MenuList>
                   <Link href={`/user`} className="outline-none">
+                    <MenuItem className="justify-center flex items-center gap-1 text-blue-500">
+                      {user.name} <CgUserlane />
+                    </MenuItem>
+                  </Link>
+                  <Link href={`/user`} className="outline-none">
                     <MenuItem className="justify-center flex items-center gap-1">
                       Profile <FaUser size={12} />
                     </MenuItem>
@@ -708,6 +714,14 @@ export default function Nav() {
                 </MenuList>
               ) : user.role === "service-provider" ? (
                 <MenuList>
+                  <Link
+                    href={`/service-provider/${user._id}`}
+                    className="outline-none"
+                  >
+                    <MenuItem className="justify-center flex items-center gap-1 text-blue-500">
+                      {user.name} <CgUserlane />
+                    </MenuItem>
+                  </Link>
                   <Link
                     href={`/service-provider/${user._id}`}
                     className="outline-none"
@@ -741,6 +755,11 @@ export default function Nav() {
                 </MenuList>
               ) : (
                 <MenuList>
+                  <Link href={`/admin`} className="outline-none">
+                    <MenuItem className="justify-center flex items-center gap-1 text-blue-500">
+                      {user.name} <CgUserlane />
+                    </MenuItem>
+                  </Link>
                   <Link href={`/admin`} className="outline-none">
                     <MenuItem className="justify-center flex items-center gap-1">
                       Dashboard <MdDashboardCustomize />
@@ -805,7 +824,7 @@ export default function Nav() {
               <Tabs value={type} className="">
                 <div className="flex justify-between items-center mb-4">
                   <h1 className="text-md text-center flex gap-1 items-center font-julius font-bold text-gray-700">
-                  <IoPersonCircleOutline size={24} /> Login | Register 
+                    <IoPersonCircleOutline size={24} /> Login | Register
                   </h1>
                   <IconButton
                     variant="text"
@@ -1238,6 +1257,11 @@ export default function Nav() {
                 {user.role === "user" ? (
                   <MenuList>
                     <Link href={`/user`} className="outline-none">
+                      <MenuItem className="justify-center flex items-center gap-1 text-blue-500">
+                        {user.name} <CgUserlane />
+                      </MenuItem>
+                    </Link>
+                    <Link href={`/user`} className="outline-none">
                       <MenuItem className="justify-center flex items-center gap-1">
                         Profile <FaUser size={12} />
                       </MenuItem>
@@ -1264,6 +1288,14 @@ export default function Nav() {
                   </MenuList>
                 ) : user.role === "service-provider" ? (
                   <MenuList>
+                    <Link
+                      href={`/service-provider/${user._id}`}
+                      className="outline-none"
+                    >
+                      <MenuItem className="justify-center flex items-center gap-1 text-blue-500">
+                        {user.name} <CgUserlane />
+                      </MenuItem>
+                    </Link>
                     <Link
                       href={`/service-provider/${user._id}`}
                       className="outline-none"
@@ -1300,6 +1332,11 @@ export default function Nav() {
                   </MenuList>
                 ) : (
                   <MenuList>
+                    <Link href={`/admin`} className="outline-none">
+                      <MenuItem className="justify-center flex items-center gap-1 text-blue-500">
+                        {user.name} <CgUserlane />
+                      </MenuItem>
+                    </Link>
                     <Link href={`/admin`} className="outline-none">
                       <MenuItem className="justify-center flex items-center gap-1">
                         Dashboard <MdDashboardCustomize />

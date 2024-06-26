@@ -94,7 +94,7 @@ const Service = ({ iconSrc, title, services, link, reviews }) => {
                 <img
                   src={service.icon?.url}
                   alt={service.name}
-                  className="w-20 h-20 rounded-lg mr-4"
+                  className="w-20 h-20 rounded-lg mr-4 object-cover"
                 />
                 <span className="text-lg ">{service.name}</span>
               </div>

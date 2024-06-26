@@ -2,13 +2,13 @@ import connectMongoDB from "@/libs/mongodb";
 import Booking from "@/models/booking";
 import { NextResponse } from "next/server";
 
-// export async function GET(request, { params }) {
-//   const { id } = params;
-// //   console.log(id);
-//   await connectMongoDB();
-//   const serviceProvider = await User.findById(id);
-//   return NextResponse.json(serviceProvider, { status: 201 });
-// }
+export async function GET(request, { params }) {
+  const { id } = params;
+  //   console.log(id);
+  await connectMongoDB();
+  const booking = await Booking.findById(id);
+  return NextResponse.json(booking, { status: 201 });
+}
 
 // export async function POST(request) {
 //   const data = await request.json();
