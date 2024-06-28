@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
+
 const bookingSchema = new Schema(
   {
     cartItems: {
@@ -61,6 +62,28 @@ const bookingSchema = new Schema(
     },
     availableServiceProviders: {
       type: Array,
+      default: [],
+    },
+    invoices: {
+      type: [
+        {
+          id: { type: String, required: true },
+          title: String,
+          date: String,
+          time: String,
+          paymentMethod: {type: String, required: true, default: ""},
+          status: Boolean,
+          items: [
+            {
+              description: String,
+              quantity: String,
+              unitPrice: String,
+              amount: String,
+            },
+          ],
+          total: String
+        },
+      ],
       default: [],
     },
     assignedServiceProviders: {

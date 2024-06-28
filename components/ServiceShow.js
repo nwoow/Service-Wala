@@ -52,7 +52,7 @@ const ServiceShow = ({ service }) => {
             alt={service.name}
             className="w-16 h-16 rounded mr-4 object-cover drop-shadow-lg"
           />
-          <div class="flex flex-col justify-center">
+          <div className="flex flex-col justify-center">
             <h2 className="text-xl font-semibold text-gray-800">
               {service.name}
             </h2>

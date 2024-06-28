@@ -279,7 +279,7 @@ function Shipping() {
       cartItems,
       availableServiceProviders: availableServiceProviders,
       status:
-        "Request sended to service provider, wait for them to be available for you.",
+        "Request has been sent to service provider, wait for them to be available for you.",
       otp,
     };
     console.log({ availableServiceProviders });

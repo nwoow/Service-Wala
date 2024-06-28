@@ -96,10 +96,10 @@ export default function Home() {
       >
         <Nav />
         <div className="areahome">
-          <ul class="circleshome">
-            <li class="shape1"></li>
-            <li class="shape2"></li>
-            <li class="shape3"></li>
+          <ul className="circleshome">
+            <li className="shape1"></li>
+            <li className="shape2"></li>
+            <li className="shape3"></li>
           </ul>
         </div>
         <div className="flex flex-col lg:flex-row">

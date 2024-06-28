@@ -48,7 +48,7 @@ const Service = ({ iconSrc, title, services, link, reviews }) => {
             alt="Icon"
             className="h-20 w-20 mr-3 rounded-md drop-shadow-lg object-cover"
           />
-          <div class="flex flex-col justify-center">
+          <div className="flex flex-col justify-center">
             <h1 className="text-xl text-gray-700 font-bold">{title}</h1>
             <div className="flex items-center mb-4">
               <div className="flex items-center">
