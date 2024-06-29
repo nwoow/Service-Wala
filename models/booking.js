@@ -93,6 +93,7 @@ const bookingSchema = new Schema(
       type: Object,
     },
     noServiceProviderAvailable: { type: Boolean, default: false },
+    canceledByCustomer: { type: String, default: "" },
   },
   {
     timestamps: true,

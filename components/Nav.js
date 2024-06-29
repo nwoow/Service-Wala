@@ -661,7 +661,6 @@ export default function Nav() {
             alt="logo"
             className="cursor-pointer w-40 object-cover"
           />
-          {/* Service Wallah */}
         </Link>
         <div className="hidden gap-2 lg:flex lg:items-center lg:justify-end w-full">
           <NavList />
@@ -695,11 +694,6 @@ export default function Nav() {
                   <Link href={`/booking`} className="outline-none">
                     <MenuItem className="justify-center flex items-center gap-1">
                       Booking <FaCalendarCheck />
-                    </MenuItem>
-                  </Link>
-                  <Link href={`/user/history`} className="outline-none">
-                    <MenuItem className="justify-center flex items-center gap-1">
-                      History <FaHistory />
                     </MenuItem>
                   </Link>
                   <MenuItem
@@ -1269,11 +1263,6 @@ export default function Nav() {
                     <Link href={`/user/booking`} className="outline-none">
                       <MenuItem className="justify-center flex items-center gap-1">
                         Booking <FaCalendarCheck />
-                      </MenuItem>
-                    </Link>
-                    <Link href={`/user/history`} className="outline-none">
-                      <MenuItem className="justify-center flex items-center gap-1">
-                        History <FaHistory />
                       </MenuItem>
                     </Link>
                     <MenuItem
